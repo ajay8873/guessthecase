@@ -30,3 +30,6 @@ npm-debug.log*
 # Build output
 dist/
 .output/
+
+.chrome-test-profile
+.chrome-test-profile-2

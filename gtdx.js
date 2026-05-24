@@ -987,6 +987,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (submitBtn) submitBtn.style.display = 'none';
     const btn = document.getElementById('summary-btn');
     if (btn) btn.style.display = 'inline-block';
+    const aiContainer = document.getElementById('ai-inline-summary-container');
+    if (aiContainer) aiContainer.style.display = 'block';
   }
 
   function copyAnkiTag(btn, tag) {
@@ -1336,6 +1338,60 @@ document.addEventListener('DOMContentLoaded', () => {
       guessing();
     }
   });
+
+  // ==========================================
+  // INLINE AI SUMMARY BUTTON LOGIC
+  // ==========================================
+  const inlineAiBtn = document.getElementById('btn-inline-ai-explain');
+  const inlineAiResult = document.getElementById('inline-ai-explain-result');
+
+  if (inlineAiBtn) {
+    inlineAiBtn.addEventListener('click', async () => {
+      inlineAiBtn.disabled = true;
+      inlineAiBtn.innerHTML = `<span class="spinner" style="display: inline-block; vertical-align: middle; margin-right: 8px;"></span> Contacting Gemini AI...`;
+
+      try {
+        const actualWrongGuesses = guessHistory
+          .filter(g => g.result === 'wrong' && g.name && g.name.toLowerCase() !== 'skipped')
+          .map(g => g.name);
+
+        const correctDisease = diseases.find(d => d.id == doctoraj);
+        const correctDiagnosis = correctDisease ? correctDisease.name : 'Unknown';
+        const savedKey = localStorage.getItem('doctoraj_gemini_key') || '';
+
+        const response = await fetch('/api/explain-guesses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': savedKey
+          },
+          body: JSON.stringify({
+            correctDiagnosis,
+            incorrectGuesses: actualWrongGuesses,
+            apiKey: savedKey
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || "Failed to explain guesses.");
+        }
+
+        const data = await response.json();
+        inlineAiBtn.style.display = 'none';
+        inlineAiResult.innerHTML = `
+          <div class="ai-explain-box" style="padding: 1rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div class="ai-explain-title" style="font-weight: bold; margin-bottom: 0.5rem; color: #0f766e;">🧠 Clinical AI Analysis</div>
+            <div class="ai-explain-content" style="font-size: 0.95rem; line-height: 1.5; color: #334155;">${data.explanation}</div>
+          </div>
+        `;
+      } catch (err) {
+        console.error("AI Explanation error:", err);
+        inlineAiBtn.disabled = false;
+        inlineAiBtn.innerHTML = `❌ Error: ${err.message}. Try Again.`;
+      }
+    });
+  }
 
   // Initialize the cookie system
   initializeCookieSystem();

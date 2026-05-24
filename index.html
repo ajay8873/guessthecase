@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="standard">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DoctorAJ - Guess the Diagnosis</title>
-  
-  <!-- Premium Typography and Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet">
-  
+  <meta name="description"
+    content="An interactive medical guessing game. Challenge your diagnostic reasoning with realistic clinical scenarios.">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="DoctorAJ">
+
+  <!-- PWA Manifest & Icons -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+
   <link rel="stylesheet" href="style.css?v=1">
 </head>
+
 <body>
   <!-- Header Section -->
   <header class="app-header">
@@ -20,24 +28,46 @@
       <div class="logo-area">
         <div class="pulse-icon">
           <svg viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 20 H30 L35 5 L42 35 L48 15 L52 25 L55 20 H100" stroke="var(--primary-accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M0 20 H30 L35 5 L42 35 L48 15 L52 25 L55 20 H100" stroke="var(--primary-accent)" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </div>
         <h1 class="logo-text">Doctor<span class="highlight">AJ</span></h1>
       </div>
-      
+
       <div class="header-actions">
-        <button id="rules-btn" class="icon-btn" title="How to Play" aria-label="How to Play">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        <!-- PWA Install Button (hidden until browser fires beforeinstallprompt) -->
+        <button id="pwa-install-btn" class="icon-btn pwa-install-btn" title="Install App" aria-label="Install App"
+          style="display:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
         </button>
         <button id="archive-btn-header" class="icon-btn" title="Case Archive" aria-label="Case Archive">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+            <path d="m3.3 7 8.7 5 8.7-5" />
+            <path d="M12 22V12" />
+          </svg>
         </button>
         <button id="stats-button" class="icon-btn" title="Statistics" aria-label="Statistics">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
         </button>
         <button id="theme-toggle-btn" class="icon-btn" title="Toggle NEJM Style" aria-label="Toggle NEJM Style">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
         </button>
       </div>
     </div>
@@ -45,21 +75,68 @@
 
   <!-- Landing View (Default Home Page) -->
   <div id="landing-view" class="landing-view">
-    <!-- Ambient Background Glows -->
-    <div class="landing-ambient-glows">
-      <div class="glow-circle glow-1"></div>
-      <div class="glow-circle glow-2"></div>
-      <div class="glow-circle glow-3"></div>
-    </div>
-
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-container">
-        <h2 class="hero-title">Refine Your <span class="highlight">Clinical Acumen</span></h2>
-        <p class="hero-subtitle">DoctorAJ is an interactive medical guessing game. Challenge your diagnostic reasoning with 30 high-yield, realistic clinical scenarios. Unlock progressive clues, test your differential diagnosis skills, and copy study tags directly into your Anki decks.</p>
-        <div class="hero-actions">
+        <p class="hero-kicker">
+          <svg class="hero-kicker-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h4l2-6 4 12 2-6h6" />
+          </svg>
+          Daily clinical reasoning game
+        </p>
+        <h2 class="hero-title">DoctorAJ Clinical Cases</h2>
+        <p class="hero-subtitle">Practice diagnostic reasoning with progressive clues, high-yield differentials,
+          case summaries, Anki tags, and AI-supported review after every solved case.</p>
+
+        <div class="hero-actions" aria-label="Landing actions">
           <button id="btn-start-diagnosing" class="btn_color hero-cta-btn">Start Diagnosing &rarr;</button>
           <button id="btn-browse-archive" class="btn_secondary hero-secondary-btn">Browse Archive</button>
+        </div>
+
+        <div class="hero-metrics" aria-label="DoctorAJ highlights">
+          <div class="hero-metric">
+            <strong>30</strong>
+            <span>curated cases</span>
+          </div>
+          <div class="hero-metric">
+            <strong>6</strong>
+            <span>tiered clues</span>
+          </div>
+          <div class="hero-metric">
+            <strong>AI</strong>
+            <span>guess review</span>
+          </div>
+        </div>
+
+        <div class="hero-preview" aria-hidden="true">
+          <div class="preview-topbar">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="preview-content">
+            <div class="preview-card preview-case">
+              <div class="preview-label">Today's case</div>
+              <h3>Fever, neck stiffness, and petechiae</h3>
+              <p>A 19-year-old college student presents with severe headache, photophobia, and rapidly progressive
+                rash.</p>
+              <div class="preview-clue-list">
+                <span class="preview-clue active">Initial presentation</span>
+                <span class="preview-clue">Physical findings</span>
+                <span class="preview-clue">Diagnostic test</span>
+              </div>
+            </div>
+            <div class="preview-card preview-panel">
+              <div class="preview-label">Differential</div>
+              <div class="preview-search">Search suspected diagnosis...</div>
+              <div class="preview-history">
+                <span>1. Viral meningitis</span>
+                <span>2. Rocky Mountain spotted fever</span>
+                <strong>3. Meningococcemia</strong>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -67,35 +144,40 @@
     <!-- How to Play Section -->
     <section class="how-to-play-section">
       <div class="rules-container">
-        <h3 class="section-title">How to Play DoctorAJ</h3>
+        <p class="section-kicker">How it works</p>
+        <h3 class="section-title">Train the way clinical reasoning actually feels</h3>
         <div class="landing-rules-grid">
           <div class="landing-rule-card">
             <div class="rule-card-icon-wrapper">
-              <span class="material-symbols-outlined">clinical_notes</span>
+              <span class="rule-step-number">01</span>
             </div>
             <h4 class="rule-card-title">Initial Presentation</h4>
-            <p class="rule-card-desc">Begin with a detailed clinical vignette outlining the patient's age, history, and chief complaint.</p>
+            <p class="rule-card-desc">Begin with a detailed clinical vignette outlining the patient's age, history, and
+              chief complaint.</p>
           </div>
           <div class="landing-rule-card">
             <div class="rule-card-icon-wrapper">
-              <span class="material-symbols-outlined">search</span>
+              <span class="rule-step-number">02</span>
             </div>
             <h4 class="rule-card-title">Search or Skip</h4>
-            <p class="rule-card-desc">Type and select a diagnosis from our comprehensive medical database. Hit submit blank to skip and reveal clues.</p>
+            <p class="rule-card-desc">Type and select a diagnosis from our comprehensive medical database. Hit submit
+              blank to skip and reveal clues.</p>
           </div>
           <div class="landing-rule-card">
             <div class="rule-card-icon-wrapper">
-              <span class="material-symbols-outlined">analytics</span>
+              <span class="rule-step-number">03</span>
             </div>
             <h4 class="rule-card-title">Analyze 6 Clues</h4>
-            <p class="rule-card-desc">Unlock 5 additional, progressively specific clues (physical signs, labs, diagnostic tests, pathology).</p>
+            <p class="rule-card-desc">Unlock 5 additional, progressively specific clues (physical signs, labs,
+              diagnostic tests, pathology).</p>
           </div>
           <div class="landing-rule-card">
             <div class="rule-card-icon-wrapper">
-              <span class="material-symbols-outlined">sync</span>
+              <span class="rule-step-number">04</span>
             </div>
             <h4 class="rule-card-title">Study & Sync</h4>
-            <p class="rule-card-desc">Read the full clinical case review, copy study tags straight to Anki, and analyze your guesses with AI explanation reports.</p>
+            <p class="rule-card-desc">Read the full clinical case review, copy study tags straight to Anki, and analyze
+              your guesses with AI explanation reports.</p>
           </div>
         </div>
       </div>
@@ -115,124 +197,136 @@
       <!-- Carousel Wrapper to hold flanking arrows and the card -->
       <div class="game-carousel-wrapper">
         <button id="btn-prev-case" class="carousel-arrow prev-arrow" aria-label="Previous Case" title="Previous Case">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
         </button>
 
         <!-- The Double-Sided 3D Card -->
         <div class="card-perspective">
           <div id="card-flip-inner" class="card-flip-inner">
-          
-          <!-- FRONT SIDE: Clues Board -->
-          <div class="card-face card-front">
-            <div class="card-header-bar">
-              <span class="card-badge">CLUES</span>
-              <span class="card-step-info">Reveal more clues by guessing or skipping</span>
+
+            <!-- FRONT SIDE: Clues Board -->
+            <div class="card-face card-front">
+              <div class="card-header-bar">
+                <span class="card-badge">CLUES</span>
+                <span class="card-step-info">Reveal more clues by guessing or skipping</span>
+              </div>
+
+              <div class="clues-list">
+                <!-- Clue 1 (Initial Clue) -->
+                <div class="clue-item revealed active-clue">
+                  <div class="clue-number">1</div>
+                  <div class="clue-content">
+                    <h3 class="clue-title">Initial Presentation</h3>
+                    <p id="guess_one" class="clue-text">Loading case clinical presentation...</p>
+                  </div>
+                </div>
+
+                <!-- Clue 2 -->
+                <div class="clue-item">
+                  <div class="clue-number">2</div>
+                  <div class="clue-content">
+                    <h3 class="clue-title">Physical Findings / Early Course</h3>
+                    <p id="guess_two" class="clue-text"></p>
+                  </div>
+                </div>
+
+                <!-- Clue 3 -->
+                <div class="clue-item">
+                  <div class="clue-number">3</div>
+                  <div class="clue-content">
+                    <h3 class="clue-title">Characteristic Sign</h3>
+                    <p id="guess_three" class="clue-text"></p>
+                  </div>
+                </div>
+
+                <!-- Clue 4 -->
+                <div class="clue-item">
+                  <div class="clue-number">4</div>
+                  <div class="clue-content">
+                    <h3 class="clue-title">Diagnostic Test / Imaging</h3>
+                    <p id="guess_four" class="clue-text"></p>
+                  </div>
+                </div>
+
+                <!-- Clue 5 -->
+                <div class="clue-item">
+                  <div class="clue-number">5</div>
+                  <div class="clue-content">
+                    <h3 class="clue-title">Key Lab Value / Antibody</h3>
+                    <p id="guess_five" class="clue-text"></p>
+                  </div>
+                </div>
+
+                <!-- Clue 6 -->
+                <div class="clue-item">
+                  <div class="clue-number">6</div>
+                  <div class="clue-content">
+                    <h3 class="clue-title">Pathological Hallmark / Prep</h3>
+                    <p id="guess_six" class="clue-text"></p>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div class="clues-list">
-              <!-- Clue 1 (Initial Clue) -->
-              <div class="clue-item revealed active-clue">
-                <div class="clue-number">1</div>
-                <div class="clue-content">
-                  <h3 class="clue-title">Initial Presentation</h3>
-                  <p id="guess_one" class="clue-text">Loading case clinical presentation...</p>
-                </div>
+
+            <!-- BACK SIDE: Diagnosis Summary -->
+            <div class="card-face card-back">
+              <div class="card-header-bar correct-header">
+                <span class="card-badge">DIAGNOSIS SUMMARY</span>
               </div>
 
-              <!-- Clue 2 -->
-              <div class="clue-item">
-                <div class="clue-number">2</div>
-                <div class="clue-content">
-                  <h3 class="clue-title">Physical Findings / Early Course</h3>
-                  <p id="guess_two" class="clue-text"></p>
-                </div>
-              </div>
+              <div class="summary-body">
+                <h2 id="summary-title" class="summary-title">Loading...</h2>
+                <div class="summary-divider"></div>
 
-              <!-- Clue 3 -->
-              <div class="clue-item">
-                <div class="clue-number">3</div>
-                <div class="clue-content">
-                  <h3 class="clue-title">Characteristic Sign</h3>
-                  <p id="guess_three" class="clue-text"></p>
+                <div class="summary-details">
+                  <h3 class="summary-subtitle">Clinical Overview</h3>
+                  <p id="disease-summary-text" class="summary-text">Loading diagnosis details...</p>
                 </div>
-              </div>
 
-              <!-- Clue 4 -->
-              <div class="clue-item">
-                <div class="clue-number">4</div>
-                <div class="clue-content">
-                  <h3 class="clue-title">Diagnostic Test / Imaging</h3>
-                  <p id="guess_four" class="clue-text"></p>
+                <div id="anki-btn-row" class="anki-btn-row" style="display: none;">
+                  <span class="anki-label">Anki Flashcard Tags:</span>
+                  <div class="anki-buttons">
+                    <button id="anki-step1-btn" class="anki-tag-btn">Anki Step 1</button>
+                    <button id="anki-step2-btn" class="anki-tag-btn">Anki Step 2</button>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Clue 5 -->
-              <div class="clue-item">
-                <div class="clue-number">5</div>
-                <div class="clue-content">
-                  <h3 class="clue-title">Key Lab Value / Antibody</h3>
-                  <p id="guess_five" class="clue-text"></p>
-                </div>
-              </div>
-
-              <!-- Clue 6 -->
-              <div class="clue-item">
-                <div class="clue-number">6</div>
-                <div class="clue-content">
-                  <h3 class="clue-title">Pathological Hallmark / Prep</h3>
-                  <p id="guess_six" class="clue-text"></p>
-                </div>
               </div>
             </div>
+
           </div>
-
-          <!-- BACK SIDE: Diagnosis Summary -->
-          <div class="card-face card-back">
-            <div class="card-header-bar correct-header">
-              <span class="card-badge">DIAGNOSIS SUMMARY</span>
-            </div>
-            
-            <div class="summary-body">
-              <h2 id="summary-title" class="summary-title">Loading...</h2>
-              <div class="summary-divider"></div>
-              
-              <div class="summary-details">
-                <h3 class="summary-subtitle">Clinical Overview</h3>
-                <p id="disease-summary-text" class="summary-text">Loading diagnosis details...</p>
-              </div>
-              
-              <div id="anki-btn-row" class="anki-btn-row" style="display: none;">
-                <span class="anki-label">Anki Flashcard Tags:</span>
-                <div class="anki-buttons">
-                  <button id="anki-step1-btn" class="anki-tag-btn">Anki Step 1</button>
-                  <button id="anki-step2-btn" class="anki-tag-btn">Anki Step 2</button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
         </div>
+
+        <button id="btn-next-case" class="carousel-arrow next-arrow" aria-label="Next Case" title="Next Case">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
       </div>
 
-      <button id="btn-next-case" class="carousel-arrow next-arrow" aria-label="Next Case" title="Next Case">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </button>
-    </div>
+      <!-- Mobile-only navigation row -->
+      <div class="mobile-nav-row">
+        <button id="btn-prev-case-mobile" class="carousel-arrow prev-arrow" aria-label="Previous Case">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+          Prev Case
+        </button>
+        <button id="btn-next-case-mobile" class="carousel-arrow next-arrow" aria-label="Next Case">
+          Next Case
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
+      </div>
 
-    <!-- Mobile-only navigation row -->
-    <div class="mobile-nav-row">
-      <button id="btn-prev-case-mobile" class="carousel-arrow prev-arrow" aria-label="Previous Case">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        Prev Case
-      </button>
-      <button id="btn-next-case-mobile" class="carousel-arrow next-arrow" aria-label="Next Case">
-        Next Case
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </button>
-    </div>
-
-    <!-- Controls Panel -->
+      <!-- Controls Panel -->
       <div class="controls-panel">
         <!-- Result Message Area -->
         <div id="result_class" class="result-message"></div>
@@ -240,7 +334,7 @@
         <!-- Input and Suggestions -->
         <div class="input-wrapper">
           <input type="text" id="guess" placeholder="Search suspected diagnosis..." autocomplete="off" disabled>
-          
+
           <!-- Suggestions Dropdown -->
           <div id="suggestions" class="suggestions-dropdown" style="display: none;"></div>
         </div>
@@ -251,6 +345,13 @@
           <button id="summary-btn" class="btn_color btn-summary" style="display: none;">+ Diagnosis Summary</button>
         </div>
         <p class="skip-helper-text">Leave search box blank and click Submit to skip a turn and unlock a clue.</p>
+      </div>
+
+      <div id="ai-inline-summary-container" style="display: none; text-align: center; margin: 1.5rem 0;">
+        <button id="btn-inline-ai-explain" class="btn-explain-ai" style="width: 100%; max-width: 400px; margin: 0 auto; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; background: #e6f3ff; border: 2px solid #2196F3; color: #0f766e;">
+          🧠 Generate AI Summary
+        </button>
+        <div id="inline-ai-explain-result" style="margin-top: 1rem; text-align: left;"></div>
       </div>
 
       <!-- Inline History Panel -->
@@ -268,7 +369,8 @@
     <div class="footer-container">
       <div class="footer-brand">
         <h3>Doctor<span class="highlight">AJ</span></h3>
-        <p>A premium clinical reasoning and differential diagnosis game designed for medical professionals, residents, and students.</p>
+        <p>A premium clinical reasoning and differential diagnosis game designed for medical professionals, residents,
+          and students.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -288,13 +390,14 @@
       </div>
     </div>
     <div class="footer-disclaimer">
-      <p><strong>Clinical Disclaimer</strong>: This website is an educational simulation game for training purposes only. It does not provide clinical advice, medical diagnosis, or treatment recommendations.</p>
+      <p><strong>Clinical Disclaimer</strong>: This website is an educational simulation game for training purposes
+        only. It does not provide clinical advice, medical diagnosis, or treatment recommendations.</p>
       <p class="footer-copy">&copy; 2026 DoctorAJ. All rights reserved.</p>
     </div>
   </footer>
 
   <!-- Modals Section -->
-  
+
   <!-- 1. Results & Stats Modal -->
   <div id="result-modal" class="modal modal-hidden">
     <div class="modal-backdrop"></div>
@@ -303,10 +406,16 @@
       <div id="modal-message" class="modal-message-body">
         <!-- Rendered dynamically by gtdx.js -->
       </div>
-      
+
       <div class="modal-actions">
         <button id="modal-share-btn" class="btn_color share-btn" style="display: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            style="margin-right: 8px;">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
+          </svg>
           Share Results
         </button>
         <div id="modal-copy-message" class="modal-copy-success" style="display: none;">Copied to clipboard!</div>
@@ -321,10 +430,10 @@
       <button id="rules-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
       <h2 class="modal-title">How to Play DoctorAJ</h2>
       <div class="modal-divider"></div>
-      
+
       <div class="rules-body">
         <p>Your goal is to guess the correct medical diagnosis in <strong>6 attempts or fewer</strong>.</p>
-        
+
         <ul class="rules-list">
           <li>
             <div class="rules-step-num">1</div>
@@ -336,15 +445,17 @@
           </li>
           <li>
             <div class="rules-step-num">3</div>
-            <div>If your guess is incorrect (or if you click <strong>Submit with an empty box to skip</strong>), a new clue is unlocked: physical findings, diagnostic tests, or pathology.</div>
+            <div>If your guess is incorrect (or if you click <strong>Submit with an empty box to skip</strong>), a new
+              clue is unlocked: physical findings, diagnostic tests, or pathology.</div>
           </li>
           <li>
             <div class="rules-step-num">4</div>
-            <div>Correctly identify the disease to win! Once finished, read the full case summary and copy Anki flashcard tags to your study decks.</div>
+            <div>Correctly identify the disease to win! Once finished, read the full case summary and copy Anki
+              flashcard tags to your study decks.</div>
           </li>
         </ul>
       </div>
-      
+
       <button id="rules-start-btn" class="btn_color full-width">Got it, Let's Play!</button>
     </div>
   </div>
@@ -356,16 +467,19 @@
       <button id="archive-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
       <h2 class="modal-title">Clinical Case Archive</h2>
       <div class="modal-divider"></div>
-      <p class="archive-intro">Test your clinical acumen on past cases. Progress in archive mode is not saved to daily statistics.</p>
-      
+      <p class="archive-intro">Test your clinical acumen on past cases. Progress in archive mode is not saved to daily
+        statistics.</p>
+
       <div id="archive-cases-grid" class="archive-cases-grid">
         <!-- Populated dynamically by initializer -->
       </div>
-      
+
       <!-- AI Case Generator Panel -->
       <div class="archive-ai-section">
         <h3>Infinite Cases (Gemini AI)</h3>
-        <p class="ai-desc">Generate 10 new clinical scenarios dynamically using the Gemini API. Custom cases are saved locally in your browser. This will securely use the server-side environment variables or your custom key if provided.</p>
+        <p class="ai-desc">Generate 10 new clinical scenarios dynamically using the Gemini API. Custom cases are saved
+          locally in your browser. This will securely use the server-side environment variables or your custom key if
+          provided.</p>
         <div class="ai-input-group">
           <input type="password" id="gemini-api-key" placeholder="Custom Gemini API Key (Optional)" />
           <button id="btn-generate-cases" class="btn_color btn-generate">Generate 10 Cases</button>
@@ -382,7 +496,8 @@
   <div id="cookie-notification" class="cookie-banner-bottom hidden">
     <div class="cookie-container">
       <div class="cookie-text">
-        <p><strong>🍪 Cookie Consent</strong>: DoctorAJ uses local storage cookies to securely save your daily progress, streaks, and guess history statistics.</p>
+        <p><strong>🍪 Cookie Consent</strong>: DoctorAJ uses local storage cookies to securely save your daily progress,
+          streaks, and guess history statistics.</p>
       </div>
       <div class="cookie-buttons">
         <button id="cookie-decline" class="cookie-btn decline">Decline</button>
@@ -406,7 +521,7 @@
 
   <!-- Case Database & Initializer -->
   <script>
-            const ALL_CASES = [
+    const ALL_CASES = [
       {
         id: 1,
         name: "Acute Appendicitis",
@@ -919,7 +1034,7 @@
       }
     ];
 
-        // Load custom cases generated by Gemini AI from local storage if they exist
+    // Load custom cases generated by Gemini AI from local storage if they exist
     const savedCustomCases = localStorage.getItem('doctoraj_custom_cases');
     if (savedCustomCases) {
       try {
@@ -953,12 +1068,12 @@
         const key = localStorage.key(k);
         // Match keys like "doctoraj_123_Mon May 24 2026"
         if (key && key.startsWith('doctoraj_') &&
-            !key.includes('_archive_') &&
-            !key.includes('_custom_') &&
-            !key.includes('_ga_consent') &&
-            !key.includes('_rules_seen') &&
-            !key.includes('_theme') &&
-            !key.includes('_gemini_key')) {
+          !key.includes('_archive_') &&
+          !key.includes('_custom_') &&
+          !key.includes('_ga_consent') &&
+          !key.includes('_rules_seen') &&
+          !key.includes('_theme') &&
+          !key.includes('_gemini_key')) {
           // Extract case id: the number right after "doctoraj_" before the next "_"
           const parts = key.replace('doctoraj_', '').split('_');
           const caseIdStr = parts[0];
@@ -989,11 +1104,11 @@
       const now = new Date();
       const daysSinceStart = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
       const todayIndex = daysSinceStart % ALL_CASES.length;
-      
+
       let selectedCase = ALL_CASES[todayIndex];
       const isCaseSolved = (caseId) => {
         return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
-               localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
+          localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
       };
 
       if (isCaseSolved(selectedCase.id)) {
@@ -1021,9 +1136,9 @@
     if (currentCase) {
       const isCaseSolved = (caseId) => {
         return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
-               localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
+          localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
       };
-      
+
       const currentIdx = ALL_CASES.findIndex(c => c.id === currentCase.id);
       if (currentIdx !== -1) {
         // Find next unsolved case
@@ -1048,7 +1163,7 @@
       }
     }
 
-        // Combine playable cases and search-only suggestions to expand vocabulary
+    // Combine playable cases and search-only suggestions to expand vocabulary
     const EXTRA_SUGGESTIONS = [
       "Acne Vulgaris",
       "ADHD (Attention Deficit Hyperactivity Disorder)",
@@ -1259,13 +1374,13 @@
       "Zollinger-Ellison Syndrome"
     ];
 
-        const searchSuggestions = [];
+    const searchSuggestions = [];
     const currentSynonyms = (currentCase.synonyms || []).map(s => s.toLowerCase());
-    
+
     // Add active playable cases first (maintaining correct IDs)
     ALL_CASES.forEach(c => {
       searchSuggestions.push({ id: c.id.toString(), name: c.name });
-      
+
       // Also register case synonyms with the same case ID
       if (c.synonyms) {
         c.synonyms.forEach(syn => {
@@ -1275,15 +1390,15 @@
         });
       }
     });
-    
+
     // Add additional suggestions to expand vocabulary
     let nextId = 100;
     EXTRA_SUGGESTIONS.forEach(name => {
       const lowerName = name.toLowerCase();
-      
+
       // Check if this extra suggestion is a synonym of the current case
       const isCurrentSynonym = currentSynonyms.includes(lowerName);
-      
+
       if (isCurrentSynonym) {
         // Map it directly to today's case ID!
         if (!searchSuggestions.some(s => s.name.toLowerCase() === lowerName)) {
@@ -1292,8 +1407,8 @@
       } else {
         // Assign standard unique ID
         if (!searchSuggestions.some(s => s.name.toLowerCase() === lowerName) &&
-            !ALL_CASES.some(c => c.name.toLowerCase() === lowerName) &&
-            !ALL_CASES.some(c => (c.synonyms || []).map(s => s.toLowerCase()).includes(lowerName))) {
+          !ALL_CASES.some(c => c.name.toLowerCase() === lowerName) &&
+          !ALL_CASES.some(c => (c.synonyms || []).map(s => s.toLowerCase()).includes(lowerName))) {
           searchSuggestions.push({ id: (nextId++).toString(), name: name });
         }
       }
@@ -1317,15 +1432,17 @@
 
       const savedTheme = localStorage.getItem('doctoraj_theme') || 'standard';
       document.documentElement.dataset.theme = savedTheme;
-      
+
       const themeBtn = document.getElementById('theme-toggle-btn');
-      themeBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.dataset.theme;
-        const newTheme = currentTheme === 'nejm' ? 'standard' : 'nejm';
-        document.documentElement.dataset.theme = newTheme;
-        localStorage.setItem('doctoraj_theme', newTheme);
-        window.location.reload();
-      });
+      if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+          const currentTheme = document.documentElement.dataset.theme;
+          const newTheme = currentTheme === 'nejm' ? 'standard' : 'nejm';
+          document.documentElement.dataset.theme = newTheme;
+          localStorage.setItem('doctoraj_theme', newTheme);
+          window.location.reload();
+        });
+      }
 
       // Case Navigation (Next/Prev Buttons)
       const prevBtn = document.getElementById('btn-prev-case');
@@ -1367,19 +1484,21 @@
       const rulesStart = document.getElementById('rules-start-btn');
 
       const openRules = () => {
+        if (!rulesModal) return;
         rulesModal.classList.remove('modal-hidden');
         rulesModal.classList.add('modal-visible');
       };
-      
+
       const closeRules = () => {
+        if (!rulesModal) return;
         rulesModal.classList.remove('modal-visible');
         rulesModal.classList.add('modal-hidden');
         localStorage.setItem('doctoraj_rules_seen', 'true');
       };
 
-      rulesBtn.addEventListener('click', openRules);
-      rulesClose.addEventListener('click', closeRules);
-      rulesStart.addEventListener('click', closeRules);
+      if (rulesBtn) rulesBtn.addEventListener('click', openRules);
+      if (rulesClose) rulesClose.addEventListener('click', closeRules);
+      if (rulesStart) rulesStart.addEventListener('click', closeRules);
 
       // Landing View & Game View Transitions
       const landingView = document.getElementById('landing-view');
@@ -1391,6 +1510,7 @@
       const openArchiveFooter = document.getElementById('footer-open-archive');
 
       const showGame = () => {
+        if (!landingView || !gameView) return;
         landingView.classList.add('hidden');
         gameView.classList.remove('hidden');
         if (window.showCompletedModal) {
@@ -1399,6 +1519,7 @@
       };
 
       const showLanding = () => {
+        if (!landingView || !gameView) return;
         gameView.classList.add('hidden');
         landingView.classList.remove('hidden');
       };
@@ -1422,8 +1543,8 @@
         browseBtn.addEventListener('click', () => {
           showGame();
           window.history.pushState({}, '', '?play=true');
-          // Trigger click on archive button to open drawer
-          document.getElementById('archive-btn-header').click();
+          const archiveHeaderBtn = document.getElementById('archive-btn-header');
+          if (archiveHeaderBtn) archiveHeaderBtn.click();
         });
       }
 
@@ -1448,6 +1569,7 @@
       const archiveGrid = document.getElementById('archive-cases-grid');
 
       const openArchive = () => {
+        if (!archiveGrid || !archiveModal) return;
         archiveGrid.innerHTML = ALL_CASES.map(c => {
           const isSolved = localStorage.getItem(`doctoraj_archive_${c.id}_solved`) === 'true';
           const isPlayed = localStorage.getItem(`doctoraj_archive_${c.id}_played`) === 'true';
@@ -1474,7 +1596,7 @@
         archiveModal.classList.add('modal-visible');
       };
 
-      archiveBtn.addEventListener('click', openArchive);
+      if (archiveBtn) archiveBtn.addEventListener('click', openArchive);
       if (openArchiveFooter) {
         openArchiveFooter.addEventListener('click', (e) => {
           e.preventDefault();
@@ -1484,7 +1606,7 @@
         });
       }
 
-      archiveClose.addEventListener('click', () => {
+      if (archiveClose && archiveModal) archiveClose.addEventListener('click', () => {
         archiveModal.classList.remove('modal-visible');
         archiveModal.classList.add('modal-hidden');
       });
@@ -1505,15 +1627,15 @@
 
         generateBtn.addEventListener('click', async () => {
           const apiKey = keyInput ? keyInput.value.trim() : '';
-          
+
           if (statusEl) {
             statusEl.textContent = "";
             statusEl.className = "ai-status";
           }
-          
+
           if (loadingEl) loadingEl.classList.remove('hidden');
           generateBtn.disabled = true;
-          
+
           try {
             const response = await fetch('/api/generate-cases', {
               method: 'POST',
@@ -1533,26 +1655,26 @@
             if (!newCases || newCases.length === 0) {
               throw new Error("No cases returned from AI.");
             }
-            
+
             let customCases = [];
             const saved = localStorage.getItem('doctoraj_custom_cases');
             if (saved) {
               customCases = JSON.parse(saved);
             }
-            
+
             customCases.push(...newCases);
             localStorage.setItem('doctoraj_custom_cases', JSON.stringify(customCases));
-            
+
             if (statusEl) {
               statusEl.textContent = "10 cases generated successfully! Reloading...";
               statusEl.className = "ai-status success";
             }
             if (loadingEl) loadingEl.classList.add('hidden');
-            
+
             setTimeout(() => {
               window.location.reload();
             }, 1500);
-            
+
           } catch (err) {
             console.error("AI Generation error:", err);
             if (statusEl) {
@@ -1576,5 +1698,257 @@
   </script>
 
   <script src="gtdx.js?v=1"></script>
+
+  <!-- ================================================================
+       PWA: Service Worker Registration + Install Prompt
+       ================================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ── 0. Detect if already installed as standalone PWA ──────────────────
+      const isRunningStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true ||       // iOS Safari
+        document.referrer.startsWith('android-app://');
+
+      const supportsPwaProtocol =
+        location.protocol === 'https:' ||
+        location.hostname === 'localhost' ||
+        location.hostname === '127.0.0.1';
+
+      if (supportsPwaProtocol) {
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = 'manifest.json';
+        document.head.appendChild(manifestLink);
+      }
+
+      if (isRunningStandalone) {
+        console.log('[PWA] Running as installed app — skipping prompts.');
+      }
+
+      // ── 1. Register Service Worker ─────────────────────────────────────────
+      if (supportsPwaProtocol && 'serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js')
+            .then((reg) => {
+              console.log('[PWA] SW registered:', reg.scope);
+              setInterval(() => reg.update(), 60000);
+              reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    showUpdateToast();
+                  }
+                });
+              });
+            })
+            .catch((err) => console.warn('[PWA] SW failed:', err));
+        });
+      }
+
+      // ── 2. State & helpers ─────────────────────────────────────────────────
+      let deferredInstallPrompt = null;
+      const installBtn = document.getElementById('pwa-install-btn');
+      const KEY_INSTALLED = 'doctoraj_pwa_installed';
+      const KEY_SNOOZE = 'doctoraj_pwa_snooze_until';
+      const SNOOZE_DAYS = 7;
+
+      const isPwaInstalled = () => localStorage.getItem(KEY_INSTALLED) === '1' || isRunningStandalone;
+      const isSnoozed = () => Date.now() < parseInt(localStorage.getItem(KEY_SNOOZE) || '0', 10);
+
+      const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+      // ── 3. Android / Chrome — capture beforeinstallprompt ─────────────────
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+
+        if (installBtn) {
+          installBtn.style.display = 'flex';
+          installBtn.classList.add('pwa-install-pulse');
+          setTimeout(() => installBtn.classList.remove('pwa-install-pulse'), 2000);
+        }
+
+        if (!isPwaInstalled() && !isSnoozed()) {
+          setTimeout(() => showInstallPopup('android'), 1200);
+        }
+      });
+
+      // ── 4. iOS Safari — show manual guide on first visit ─────────────────
+      if (isIos && isSafari && !isRunningStandalone && !isPwaInstalled() && !isSnoozed()) {
+        window.addEventListener('DOMContentLoaded', () => {
+          setTimeout(() => showInstallPopup('ios'), 1500);
+        });
+      }
+
+      // ── 5. Header install button ───────────────────────────────────────────
+      if (installBtn) {
+        installBtn.addEventListener('click', () => {
+          if (deferredInstallPrompt) triggerInstall();
+          else if (isIos && isSafari) showInstallPopup('ios');
+        });
+      }
+
+      // ── 6. appinstalled event ──────────────────────────────────────────────
+      window.addEventListener('appinstalled', () => {
+        console.log('[PWA] App installed!');
+        localStorage.setItem(KEY_INSTALLED, '1');
+        deferredInstallPrompt = null;
+        if (installBtn) installBtn.style.display = 'none';
+        closePopup();
+        showSuccessToast();
+      });
+
+      // ── 7. Build and show install popup ───────────────────────────────────
+      function showInstallPopup(platform) {
+        if (document.getElementById('pwa-install-popup')) return;
+        const isAndroid = platform === 'android';
+
+        const overlay = document.createElement('div');
+        overlay.id = 'pwa-install-popup';
+        overlay.className = 'pwa-popup-overlay';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-labelledby', 'pwa-popup-title');
+
+        overlay.innerHTML = `
+          <div class="pwa-popup-card">
+            <button class="pwa-popup-close" id="pwa-popup-close" aria-label="Close">&times;</button>
+
+            <div class="pwa-popup-header">
+              <div class="pwa-popup-app-icon">
+                <img src="icons/icon-192.png" alt="DoctorAJ" width="60" height="60"
+                     onerror="this.outerHTML='<div class=pwa-icon-fallback>AJ</div>'">
+              </div>
+              <div class="pwa-popup-app-info">
+                <h2 class="pwa-popup-title" id="pwa-popup-title">Install DoctorAJ</h2>
+                <p class="pwa-popup-subtitle">Free &bull; Medical Education</p>
+              </div>
+            </div>
+
+            <p class="pwa-popup-desc">
+              Get the full app experience — works offline, loads instantly, and lives right on your home screen.
+            </p>
+
+            <ul class="pwa-popup-benefits">
+              <li><span>⚡</span> Instant launch — no browser bar</li>
+              <li><span>📶</span> Works offline with cached cases</li>
+              <li><span>🏠</span> Stays on your home screen</li>
+              <li><span>🖥️</span> Full-screen immersive gameplay</li>
+            </ul>
+
+            ${isAndroid ? `
+              <div class="pwa-popup-actions">
+                <button id="pwa-popup-install" class="pwa-popup-btn-install">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2.5"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Add to Home Screen
+                </button>
+                <button id="pwa-popup-later" class="pwa-popup-btn-later">Maybe later</button>
+              </div>
+            ` : `
+              <div class="pwa-ios-guide">
+                <p class="pwa-ios-guide-title">How to install on iOS:</p>
+                <ol class="pwa-ios-steps">
+                  <li>
+                    <span class="pwa-ios-num">1</span>
+                    Tap the <strong>Share</strong> button
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:4px">
+                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                      <polyline points="16 6 12 2 8 6"/>
+                      <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                    in Safari's toolbar
+                  </li>
+                  <li><span class="pwa-ios-num">2</span> Scroll and tap <strong>"Add to Home Screen"</strong></li>
+                  <li><span class="pwa-ios-num">3</span> Tap <strong>"Add"</strong> to confirm</li>
+                </ol>
+              </div>
+              <div class="pwa-popup-actions">
+                <button id="pwa-popup-later" class="pwa-popup-btn-later pwa-popup-btn-later--full">
+                  Got it, I'll do it later
+                </button>
+              </div>
+            `}
+          </div>
+        `;
+
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('show')));
+
+        document.getElementById('pwa-popup-close').addEventListener('click', snoozeAndClose);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) snoozeAndClose(); });
+
+        const btnInstall = document.getElementById('pwa-popup-install');
+        if (btnInstall) btnInstall.addEventListener('click', triggerInstall);
+
+        const btnLater = document.getElementById('pwa-popup-later');
+        if (btnLater) btnLater.addEventListener('click', snoozeAndClose);
+      }
+
+      function closePopup() {
+        const popup = document.getElementById('pwa-install-popup');
+        if (!popup) return;
+        popup.classList.remove('show');
+        setTimeout(() => popup.remove(), 350);
+      }
+
+      function snoozeAndClose() {
+        localStorage.setItem(KEY_SNOOZE, String(Date.now() + SNOOZE_DAYS * 86400000));
+        closePopup();
+      }
+
+      async function triggerInstall() {
+        if (!deferredInstallPrompt) return;
+        closePopup();
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        console.log('[PWA] Outcome:', outcome);
+        deferredInstallPrompt = null;
+        if (installBtn) installBtn.style.display = 'none';
+        if (outcome === 'accepted') localStorage.setItem(KEY_INSTALLED, '1');
+      }
+
+      // ── 8. Success toast ───────────────────────────────────────────────────
+      function showSuccessToast() {
+        const t = document.createElement('div');
+        t.className = 'pwa-success-toast';
+        t.textContent = '🎉 DoctorAJ installed! Find it on your home screen.';
+        document.body.appendChild(t);
+        requestAnimationFrame(() => t.classList.add('show'));
+        setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4000);
+      }
+
+      // ── 9. Update toast ────────────────────────────────────────────────────
+      function showUpdateToast() {
+        const t = document.createElement('div');
+        t.className = 'pwa-update-toast';
+        t.innerHTML = '<span>🔄 New version available.</span><button id="pwa-update-reload">Reload</button>';
+        document.body.appendChild(t);
+        requestAnimationFrame(() => t.classList.add('show'));
+        document.getElementById('pwa-update-reload').addEventListener('click', () => location.reload());
+      }
+
+      // ── 10. Manifest shortcuts ─────────────────────────────────────────────
+      const shortcut = new URLSearchParams(location.search).get('shortcut');
+      if (shortcut === 'archive') {
+        window.addEventListener('DOMContentLoaded', () => {
+          const btn = document.getElementById('archive-btn-header');
+          if (btn) setTimeout(() => btn.click(), 500);
+        });
+      }
+    })();
+  </script>
 </body>
+
 </html>

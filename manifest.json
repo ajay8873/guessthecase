@@ -1,0 +1,44 @@
+{
+  "name": "DoctorAJ - Guess the Diagnosis",
+  "short_name": "DoctorAJ",
+  "description": "An interactive medical guessing game. Challenge your diagnostic reasoning with realistic clinical scenarios.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f766e",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["education", "medical", "games"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Daily Case",
+      "short_name": "Play",
+      "description": "Jump into today's clinical case",
+      "url": "/?shortcut=daily",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Case Archive",
+      "short_name": "Archive",
+      "description": "Browse all past clinical cases",
+      "url": "/?shortcut=archive",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
