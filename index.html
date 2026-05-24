@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoctorAJ - Guess the Diagnosis</title>
+  
+  <!-- Premium Typography and Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="pulse-icon">
+          <svg viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 20 H30 L35 5 L42 35 L48 15 L52 25 L55 20 H100" stroke="var(--primary-accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1 class="logo-text">Doctor<span class="highlight">AJ</span></h1>
+      </div>
+      
+      <div class="header-actions">
+        <button id="rules-btn" class="icon-btn" title="How to Play" aria-label="How to Play">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </button>
+        <button id="archive-btn-header" class="icon-btn" title="Case Archive" aria-label="Case Archive">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        </button>
+        <button id="stats-button" class="icon-btn" title="Statistics" aria-label="Statistics">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </button>
+        <button id="theme-toggle-btn" class="icon-btn" title="Toggle NEJM Style" aria-label="Toggle NEJM Style">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Landing View (Default Home Page) -->
+  <div id="landing-view" class="landing-view">
+    <!-- Ambient Background Glows -->
+    <div class="landing-ambient-glows">
+      <div class="glow-circle glow-1"></div>
+      <div class="glow-circle glow-2"></div>
+      <div class="glow-circle glow-3"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-container">
+        <h2 class="hero-title">Refine Your <span class="highlight">Clinical Acumen</span></h2>
+        <p class="hero-subtitle">DoctorAJ is an interactive medical guessing game. Challenge your diagnostic reasoning with 30 high-yield, realistic clinical scenarios. Unlock progressive clues, test your differential diagnosis skills, and copy study tags directly into your Anki decks.</p>
+        <div class="hero-actions">
+          <button id="btn-start-diagnosing" class="btn_color hero-cta-btn">Start Diagnosing &rarr;</button>
+          <button id="btn-browse-archive" class="btn_secondary hero-secondary-btn">Browse Archive</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to Play Section -->
+    <section class="how-to-play-section">
+      <div class="rules-container">
+        <h3 class="section-title">How to Play DoctorAJ</h3>
+        <div class="landing-rules-grid">
+          <div class="landing-rule-card">
+            <div class="rule-card-icon-wrapper">
+              <span class="material-symbols-outlined">clinical_notes</span>
+            </div>
+            <h4 class="rule-card-title">Initial Presentation</h4>
+            <p class="rule-card-desc">Begin with a detailed clinical vignette outlining the patient's age, history, and chief complaint.</p>
+          </div>
+          <div class="landing-rule-card">
+            <div class="rule-card-icon-wrapper">
+              <span class="material-symbols-outlined">search</span>
+            </div>
+            <h4 class="rule-card-title">Search or Skip</h4>
+            <p class="rule-card-desc">Type and select a diagnosis from our comprehensive medical database. Hit submit blank to skip and reveal clues.</p>
+          </div>
+          <div class="landing-rule-card">
+            <div class="rule-card-icon-wrapper">
+              <span class="material-symbols-outlined">analytics</span>
+            </div>
+            <h4 class="rule-card-title">Analyze 6 Clues</h4>
+            <p class="rule-card-desc">Unlock 5 additional, progressively specific clues (physical signs, labs, diagnostic tests, pathology).</p>
+          </div>
+          <div class="landing-rule-card">
+            <div class="rule-card-icon-wrapper">
+              <span class="material-symbols-outlined">sync</span>
+            </div>
+            <h4 class="rule-card-title">Study & Sync</h4>
+            <p class="rule-card-desc">Read the full clinical case review, copy study tags straight to Anki, and analyze your guesses with AI explanation reports.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Game View (Game Board) -->
+  <div id="game-view" class="game-view hidden">
+    <!-- Archive Indicator -->
+    <div id="archive-banner" class="archive-banner hidden">
+      <span>Currently playing in <strong>Archive Mode (Case #<span id="archive-case-num"></span>)</strong></span>
+      <a href="index.html" class="btn-exit-archive">Exit Archive</a>
+    </div>
+
+    <!-- Main Game Layout -->
+    <main class="game-container">
+      <!-- Carousel Wrapper to hold flanking arrows and the card -->
+      <div class="game-carousel-wrapper">
+        <button id="btn-prev-case" class="carousel-arrow prev-arrow" aria-label="Previous Case" title="Previous Case">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+
+        <!-- The Double-Sided 3D Card -->
+        <div class="card-perspective">
+          <div id="card-flip-inner" class="card-flip-inner">
+          
+          <!-- FRONT SIDE: Clues Board -->
+          <div class="card-face card-front">
+            <div class="card-header-bar">
+              <span class="card-badge">CLUES</span>
+              <span class="card-step-info">Reveal more clues by guessing or skipping</span>
+            </div>
+            
+            <div class="clues-list">
+              <!-- Clue 1 (Initial Clue) -->
+              <div class="clue-item revealed active-clue">
+                <div class="clue-number">1</div>
+                <div class="clue-content">
+                  <h3 class="clue-title">Initial Presentation</h3>
+                  <p id="guess_one" class="clue-text">Loading case clinical presentation...</p>
+                </div>
+              </div>
+
+              <!-- Clue 2 -->
+              <div class="clue-item">
+                <div class="clue-number">2</div>
+                <div class="clue-content">
+                  <h3 class="clue-title">Physical Findings / Early Course</h3>
+                  <p id="guess_two" class="clue-text"></p>
+                </div>
+              </div>
+
+              <!-- Clue 3 -->
+              <div class="clue-item">
+                <div class="clue-number">3</div>
+                <div class="clue-content">
+                  <h3 class="clue-title">Characteristic Sign</h3>
+                  <p id="guess_three" class="clue-text"></p>
+                </div>
+              </div>
+
+              <!-- Clue 4 -->
+              <div class="clue-item">
+                <div class="clue-number">4</div>
+                <div class="clue-content">
+                  <h3 class="clue-title">Diagnostic Test / Imaging</h3>
+                  <p id="guess_four" class="clue-text"></p>
+                </div>
+              </div>
+
+              <!-- Clue 5 -->
+              <div class="clue-item">
+                <div class="clue-number">5</div>
+                <div class="clue-content">
+                  <h3 class="clue-title">Key Lab Value / Antibody</h3>
+                  <p id="guess_five" class="clue-text"></p>
+                </div>
+              </div>
+
+              <!-- Clue 6 -->
+              <div class="clue-item">
+                <div class="clue-number">6</div>
+                <div class="clue-content">
+                  <h3 class="clue-title">Pathological Hallmark / Prep</h3>
+                  <p id="guess_six" class="clue-text"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK SIDE: Diagnosis Summary -->
+          <div class="card-face card-back">
+            <div class="card-header-bar correct-header">
+              <span class="card-badge">DIAGNOSIS SUMMARY</span>
+            </div>
+            
+            <div class="summary-body">
+              <h2 id="summary-title" class="summary-title">Loading...</h2>
+              <div class="summary-divider"></div>
+              
+              <div class="summary-details">
+                <h3 class="summary-subtitle">Clinical Overview</h3>
+                <p id="disease-summary-text" class="summary-text">Loading diagnosis details...</p>
+              </div>
+              
+              <div id="anki-btn-row" class="anki-btn-row" style="display: none;">
+                <span class="anki-label">Anki Flashcard Tags:</span>
+                <div class="anki-buttons">
+                  <button id="anki-step1-btn" class="anki-tag-btn">Anki Step 1</button>
+                  <button id="anki-step2-btn" class="anki-tag-btn">Anki Step 2</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <button id="btn-next-case" class="carousel-arrow next-arrow" aria-label="Next Case" title="Next Case">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- Mobile-only navigation row -->
+    <div class="mobile-nav-row">
+      <button id="btn-prev-case-mobile" class="carousel-arrow prev-arrow" aria-label="Previous Case">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Prev Case
+      </button>
+      <button id="btn-next-case-mobile" class="carousel-arrow next-arrow" aria-label="Next Case">
+        Next Case
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- Controls Panel -->
+      <div class="controls-panel">
+        <!-- Result Message Area -->
+        <div id="result_class" class="result-message"></div>
+
+        <!-- Input and Suggestions -->
+        <div class="input-wrapper">
+          <input type="text" id="guess" placeholder="Search suspected diagnosis..." autocomplete="off" disabled>
+          
+          <!-- Suggestions Dropdown -->
+          <div id="suggestions" class="suggestions-dropdown" style="display: none;"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons-row">
+          <button id="submit-btn" class="btn_color" onclick="guessing()" disabled>Cookies Required</button>
+          <button id="summary-btn" class="btn_color btn-summary" style="display: none;">+ Diagnosis Summary</button>
+        </div>
+        <p class="skip-helper-text">Leave search box blank and click Submit to skip a turn and unlock a clue.</p>
+      </div>
+
+      <!-- Inline History Panel -->
+      <div class="history-panel">
+        <h3 class="history-title">Guess History</h3>
+        <div id="guess-history-list" class="guess-history-list">
+          <div class="history-empty">No guesses made yet.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Premium Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h3>Doctor<span class="highlight">AJ</span></h3>
+        <p>A premium clinical reasoning and differential diagnosis game designed for medical professionals, residents, and students.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="#" id="footer-play-daily">Daily Case</a></li>
+            <li><a href="#" id="footer-open-archive">Archive Grid</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="https://www.nejm.org" target="_blank" rel="noopener noreferrer">NEJM Case Reports</a></li>
+            <li><a href="https://apps.ankiweb.net/" target="_blank" rel="noopener noreferrer">Anki Cards</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-disclaimer">
+      <p><strong>Clinical Disclaimer</strong>: This website is an educational simulation game for training purposes only. It does not provide clinical advice, medical diagnosis, or treatment recommendations.</p>
+      <p class="footer-copy">&copy; 2026 DoctorAJ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Modals Section -->
+  
+  <!-- 1. Results & Stats Modal -->
+  <div id="result-modal" class="modal modal-hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <button id="modal-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
+      <div id="modal-message" class="modal-message-body">
+        <!-- Rendered dynamically by gtdx.js -->
+      </div>
+      
+      <div class="modal-actions">
+        <button id="modal-share-btn" class="btn_color share-btn" style="display: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Share Results
+        </button>
+        <div id="modal-copy-message" class="modal-copy-success" style="display: none;">Copied to clipboard!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Rules Modal (How to Play) -->
+  <div id="rules-modal" class="modal modal-hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content text-left">
+      <button id="rules-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
+      <h2 class="modal-title">How to Play DoctorAJ</h2>
+      <div class="modal-divider"></div>
+      
+      <div class="rules-body">
+        <p>Your goal is to guess the correct medical diagnosis in <strong>6 attempts or fewer</strong>.</p>
+        
+        <ul class="rules-list">
+          <li>
+            <div class="rules-step-num">1</div>
+            <div>You start with an <strong>Initial Presentation</strong> clue summarizing the patient's symptoms.</div>
+          </li>
+          <li>
+            <div class="rules-step-num">2</div>
+            <div>Search and select a disease from the autocomplete search box, then click <strong>Submit</strong>.</div>
+          </li>
+          <li>
+            <div class="rules-step-num">3</div>
+            <div>If your guess is incorrect (or if you click <strong>Submit with an empty box to skip</strong>), a new clue is unlocked: physical findings, diagnostic tests, or pathology.</div>
+          </li>
+          <li>
+            <div class="rules-step-num">4</div>
+            <div>Correctly identify the disease to win! Once finished, read the full case summary and copy Anki flashcard tags to your study decks.</div>
+          </li>
+        </ul>
+      </div>
+      
+      <button id="rules-start-btn" class="btn_color full-width">Got it, Let's Play!</button>
+    </div>
+  </div>
+
+  <!-- 3. Archive Selection Modal -->
+  <div id="archive-modal" class="modal modal-hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <button id="archive-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
+      <h2 class="modal-title">Clinical Case Archive</h2>
+      <div class="modal-divider"></div>
+      <p class="archive-intro">Test your clinical acumen on past cases. Progress in archive mode is not saved to daily statistics.</p>
+      
+      <div id="archive-cases-grid" class="archive-cases-grid">
+        <!-- Populated dynamically by initializer -->
+      </div>
+      
+      <!-- AI Case Generator Panel -->
+      <div class="archive-ai-section">
+        <h3>Infinite Cases (Gemini AI)</h3>
+        <p class="ai-desc">Generate 10 new clinical scenarios dynamically using the Gemini API. Custom cases are saved locally in your browser. This will securely use the server-side environment variables or your custom key if provided.</p>
+        <div class="ai-input-group">
+          <input type="password" id="gemini-api-key" placeholder="Custom Gemini API Key (Optional)" />
+          <button id="btn-generate-cases" class="btn_color btn-generate">Generate 10 Cases</button>
+        </div>
+        <div id="ai-loading" class="ai-loading hidden">
+          <span class="spinner"></span> Contacting Gemini AI & generating clinical scenarios...
+        </div>
+        <div id="ai-status" class="ai-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cookie Consent Notification Banner -->
+  <div id="cookie-notification" class="cookie-banner-bottom hidden">
+    <div class="cookie-container">
+      <div class="cookie-text">
+        <p><strong>🍪 Cookie Consent</strong>: DoctorAJ uses local storage cookies to securely save your daily progress, streaks, and guess history statistics.</p>
+      </div>
+      <div class="cookie-buttons">
+        <button id="cookie-decline" class="cookie-btn decline">Decline</button>
+        <button id="cookie-accept" class="cookie-btn accept">Accept & Play</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unused legacy elements to satisfy references in gtdx.js -->
+  <div id="share-button" style="display: none;"></div>
+  <div id="share-result" style="display: none;"></div>
+  <div id="copy-message" style="display: none;"></div>
+
+  <!-- Data Scripts populated dynamically by the Initializer -->
+  <script id="disease-data" type="application/json">[]</script>
+  <script id="symptom-data" type="application/json">[]</script>
+  <script id="description-data" type="application/json">""</script>
+  <script id="anki1-data" type="application/json">""</script>
+  <script id="anki2-data" type="application/json">""</script>
+  <div id="doctoraj-data" data-id="" data-archive=""></div>
+
+  <!-- Case Database & Initializer -->
+  <script>
+            const ALL_CASES = [
+      {
+        id: 1,
+        name: "Acute Appendicitis",
+        synonyms: ["Appendicitis", "Acute Appendicitis"],
+        symptoms: [
+          "Migrated pain from periumbilical region to the right lower quadrant (McBurney's point).",
+          "Low-grade fever, nausea, vomiting, and anorexia (Dunphy's sign).",
+          "Rebound tenderness, guarding, and referred pain to RLQ when pressing LLQ (Rovsing's sign).",
+          "Ultrasonography shows a non-compressible, blind-ended tubular structure measuring 7mm in diameter.",
+          "Leukocytosis with a left shift on complete blood count."
+        ],
+        initialClue: "A 24-year-old male presents to the emergency department with acute onset abdominal pain that began around his navel about 12 hours ago.",
+        description: "Acute appendicitis is an acute inflammation of the vermiform appendix. It is one of the most common causes of emergency abdominal surgery. Classic presentation includes periumbilical pain migrating to the right lower quadrant, fever, anorexia, and localized peritonitis signs.",
+        anki1: "Medical::Surgery::Appendicitis",
+        anki2: "Step2::Surgery::GI",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1801445"
+      },
+      {
+        id: 2,
+        name: "Multiple Sclerosis",
+        synonyms: ["MS", "Multiple Sclerosis"],
+        symptoms: [
+          "Unilateral painful loss of vision with impaired color perception (optic neuritis).",
+          "Lhermitte's sign: an electric shock-like sensation running down the spine upon flexing the neck.",
+          "Symptoms worsen temporarily when body temperature rises, such as after a hot bath (Uhthoff's phenomenon).",
+          "MRI of the brain shows multiple ovoid T2-hyperintense lesions perpendicular to the ventricles (Dawson's fingers).",
+          "Cerebrospinal fluid analysis reveals oligoclonal bands and elevated IgG index."
+        ],
+        initialClue: "A 28-year-old female presents with tingling and numbness in both legs, along with brief episodes of double vision over the past two weeks.",
+        description: "Multiple Sclerosis (MS) is a chronic autoimmune, inflammatory demyelinating disease of the central nervous system. It typically affects young adults, particularly females, and displays a relapsing-remitting or progressive course. Pathological hallmarks include demyelinating plaques, axonal loss, and gliosis.",
+        anki1: "Medical::Neurology::MultipleSclerosis",
+        anki2: "Step2::Neurology::MS",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1408128"
+      },
+      {
+        id: 3,
+        name: "Graves' Disease",
+        synonyms: ["Graves Disease", "Hyperthyroidism", "Thyrotoxicosis"],
+        symptoms: [
+          "Anterior neck fullness, weight loss despite increased appetite, and heat intolerance.",
+          "Fine hand tremors, hyperreflexia, and a hyperdynamic heart rate with palpitations.",
+          "Bilateral proptosis (bulging eyes), lid lag, and pretibial myxedema (waxy, orange-peel skin on shins).",
+          "Lab results show extremely low TSH and elevated free T3 and T4 levels.",
+          "Positive for Thyroid-Stimulating Immunoglobulin (TSI) antibodies."
+        ],
+        initialClue: "A 35-year-old female presents with anxiety, unexplained weight loss of 10 lbs over 2 months, and feeling constantly hot.",
+        description: "Graves' disease is an autoimmune disorder that causes hyperthyroidism. It is characterized by the production of autoantibodies (TSI) that stimulate the TSH receptor, leading to excessive thyroid hormone synthesis and release. Classic clinical triad includes hyperthyroidism, goiter, and ophthalmopathy (exophthalmos).",
+        anki1: "Medical::Endocrine::Graves",
+        anki2: "Step2::Endocrine::Hyperthyroidism",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1603437"
+      },
+      {
+        id: 4,
+        name: "Pulmonary Embolism",
+        synonyms: ["PE", "Pulmonary Embolism", "Pulmonary Embolus"],
+        symptoms: [
+          "Sudden-onset pleuritic chest pain, dyspnea, and tachypnea.",
+          "Sinus tachycardia on ECG, occasionally showing an S1Q3T3 pattern.",
+          "CT pulmonary angiography (CTPA) reveals a filling defect in the main pulmonary artery.",
+          "Significantly elevated D-dimer levels (above the age-adjusted cutoff).",
+          "Hypoxemia with an increased alveolar-arterial (A-a) oxygen gradient."
+        ],
+        initialClue: "A 62-year-old male presents with sudden shortness of breath and sharp chest pain that worsens with deep breathing, 5 days after undergoing total hip replacement.",
+        description: "Pulmonary Embolism (PE) is a life-threatening blockage of one or more pulmonary arteries, usually caused by deep vein thrombosis (DVT) clots migrating from the lower extremities. Key diagnostic modalities include Wells criteria, D-dimer testing, and CT pulmonary angiography.",
+        anki1: "Medical::Pulmonology::PulmonaryEmbolism",
+        anki2: "Step2::Pulm::PE",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1112903"
+      },
+      {
+        id: 5,
+        name: "Celiac Disease",
+        synonyms: ["Celiac Disease", "Coeliac Disease", "Celiac Sprue", "Gluten-Sensitive Enteropathy"],
+        symptoms: [
+          "Chronic diarrhea, bloating, weight loss, and foul-smelling, floating stools.",
+          "An intensely itchy vesicular skin rash on the elbows and knees (dermatitis herpetiformis).",
+          "Serology is positive for IgA tissue transglutaminase (tTG) antibodies.",
+          "Duodenal biopsy shows villous atrophy, crypt hyperplasia, and intraepithelial lymphocytosis.",
+          "Iron deficiency anemia refractory to oral iron supplementation."
+        ],
+        initialClue: "A 31-year-old female presents with fatigue, recurrent abdominal cramps, bloating, and loose stools for the past year.",
+        description: "Celiac disease is a systemic autoimmune disorder triggered by dietary gluten ingestion in genetically susceptible individuals (HLA-DQ2/DQ8). It causes immune-mediated inflammatory damage to the small intestinal mucosa, leading to malabsorption. Management requires strict lifelong gluten-free diet.",
+        anki1: "Medical::GI::Celiac",
+        anki2: "Step2::GI::Malabsorption",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1113994"
+      },
+      {
+        id: 6,
+        name: "Pheochromocytoma",
+        synonyms: ["Pheochromocytoma", "Phaeochromocytoma", "Pheo"],
+        symptoms: [
+          "Paroxysmal episodes of severe headache, palpitations, and profuse diaphoresis.",
+          "Severe hypertension, which can be episodic or sustained, and orthostatic hypotension.",
+          "Elevated 24-hour urine or plasma free fractionated metanephrines and normetanephrines.",
+          "Adrenal mass identified on abdominal CT scan with high unenhanced attenuation.",
+          "Surgical preparation requires alpha-adrenergic blockade (e.g., phenoxybenzamine) before beta-blockade."
+        ],
+        initialClue: "A 45-year-old female presents with episodes of pounding headache, racing heart, and sweating that occur twice a week and last about 15 minutes.",
+        description: "Pheochromocytoma is a rare, catecholamine-secreting tumor derived from chromaffin cells of the adrenal medulla. It presents with the classic triad of episodic headaches, sweating, and palpitations. Pre-operative management requires alpha-blockade followed by beta-blockade to avoid hypertensive crisis.",
+        anki1: "Medical::Endocrine::Pheochromocytoma",
+        anki2: "Step2::Endocrine::Adrenal",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1601614"
+      },
+      {
+        id: 7,
+        name: "Parkinson's Disease",
+        synonyms: ["Parkinson's Disease", "Parkinson Disease", "Parkinsons", "Parkinsonism"],
+        symptoms: [
+          "Asymmetric resting tremor ('pill-rolling'), bradykinesia, and rigidity.",
+          "Postural instability, micrographic handwriting, and a masked facial expression.",
+          "Festinating gait: small, shuffling steps with reduced arm swing and difficulty initiating walking.",
+          "Substantial clinical improvement in motor symptoms upon initiation of Levodopa/Carbidopa.",
+          "Histopathology reveals loss of pigmented dopaminergic neurons in the substantia nigra pars compacta and presence of Lewy bodies (alpha-synuclein)."
+        ],
+        initialClue: "A 68-year-old male is brought in by his wife, who notices that he has become slow to get out of chairs, has a trembling left hand when relaxing, and walks with a stooped posture.",
+        description: "Parkinson's disease is a progressive neurodegenerative disorder primarily affecting motor control. It is characterized by dopamine deficiency in the basal ganglia due to loss of dopaminergic neurons in the substantia nigra. Classic motor features include tremor, rigidity, bradykinesia, and postural instability.",
+        anki1: "Medical::Neurology::Parkinson",
+        anki2: "Step2::Neurology::MovementDisorders",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp030935"
+      },
+      {
+        id: 8,
+        name: "Systemic Lupus Erythematosus",
+        synonyms: ["Systemic Lupus Erythematosus", "SLE", "Lupus", "Systemic Lupus"],
+        symptoms: [
+          "Malar rash (butterfly-shaped rash sparing the nasolabial folds) and photosensitivity.",
+          "Joint pain (non-erosive arthritis affecting two or more peripheral joints) and oral ulcers.",
+          "Pleuritis or pericarditis, presenting as chest pain worsening with inspiration.",
+          "Positive anti-nuclear antibody (ANA) screening, followed by highly specific anti-double-stranded DNA (dsDNA) or anti-Smith (Sm) antibodies.",
+          "Renal biopsy shows immune complex-mediated glomerulonephritis (lupus nephritis)."
+        ],
+        initialClue: "A 26-year-old female presents with a 3-month history of fatigue, joint aches in her fingers, and a red rash across her cheeks after sun exposure.",
+        description: "Systemic Lupus Erythematosus (SLE) is a chronic, multi-system autoimmune disease characterized by the production of autoantibodies against self-antigens. It displays a wide spectrum of clinical presentations, commonly affecting the skin, joints, kidneys, and serosal membranes.",
+        anki1: "Medical::Rheumatology::SLE",
+        anki2: "Step2::Rheum::Lupus",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp0802909"
+      },
+      {
+        id: 9,
+        name: "Myasthenia Gravis",
+        synonyms: ["Myasthenia Gravis", "MG"],
+        symptoms: [
+          "Fluctuating skeletal muscle weakness that worsens with repetitive activity and improves with rest.",
+          "Bilateral or unilateral ptosis (drooping eyelid) and diplopia (double vision) that worsens throughout the day.",
+          "Bulbar symptoms: difficulty swallowing (dysphagia), chewing, and nasal speech.",
+          "Detection of autoantibodies against the acetylcholine receptor (AChR) in serum.",
+          "Chest CT shows hyperplasia of the thymus or a thymoma."
+        ],
+        initialClue: "A 34-year-old female reports that her eyelids droop and her vision becomes blurry in the evenings, especially when reading or watching television.",
+        description: "Myasthenia Gravis (MG) is an autoimmune neuromuscular junction disorder caused by antibodies directed against acetylcholine receptors or related proteins at the postsynaptic membrane. Weakness characteristically fluctuates and exhibits fatigue. Association with thymic pathology is high.",
+        anki1: "Medical::Neurology::MyastheniaGravis",
+        anki2: "Step2::Neurology::NMJ",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1602678"
+      },
+      {
+        id: 10,
+        name: "Aortic Dissection",
+        synonyms: ["Aortic Dissection", "AD", "Aortic Tear"],
+        symptoms: [
+          "Sudden, tearing chest pain radiating to the back (between the scapulae).",
+          "Asymmetric blood pressure readings in the upper extremities (>20 mmHg difference) or unequal pulses.",
+          "Chest X-ray shows widening of the mediastinum.",
+          "Contrast-enhanced CT angiography (CTA) of the chest reveals an intimal flap dividing the true and false lumens.",
+          "Association with uncontrolled hypertension, Marfan syndrome, or bicuspid aortic valve."
+        ],
+        initialClue: "A 55-year-old male with a history of severe hypertension presents to the emergency department with sudden-onset, excruciating chest pain that feels like 'tearing' and spreads to his back.",
+        description: "Aortic Dissection is a catastrophic vascular emergency defined by a tear in the aortic intima, allowing blood to enter the media and create a false lumen. Stanford classification divides cases into Type A (involving ascending aorta, surgical emergency) and Type B (descending aorta, managed medically with blood pressure control).",
+        anki1: "Medical::Cardiology::AorticDissection",
+        anki2: "Step2::Cardio::Aorta",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp022329"
+      },
+      {
+        id: 11,
+        name: "Diabetic Ketoacidosis",
+        synonyms: ["DKA", "Diabetic Ketoacidosis", "Diabetic Acidosis"],
+        symptoms: [
+          "Deep, rapid, and labored breathing pattern (Kussmaul breathing) with a fruity, sweet breath odor.",
+          "Altered mental status, nausea, vomiting, abdominal pain mimicking an acute abdomen.",
+          "Elevated serum ketones, metabolic acidosis, and an increased anion gap.",
+          "Urinalysis reveals marked glucosuria and ketonuria.",
+          "Intravenous insulin and aggressive fluid resuscitation with normal saline are the primary treatments."
+        ],
+        initialClue: "A 19-year-old male with Type 1 diabetes is brought to the clinic feeling extremely fatigued, nauseous, and complaining of abdominal pain for the past day.",
+        description: "Diabetic Ketoacidosis (DKA) is a life-threatening complication of diabetes mellitus, primarily affecting patients with Type 1 diabetes. It is characterized by the triad of hyperglycemia, ketosis, and metabolic acidosis. Management involves fluid resuscitation, insulin therapy, and electrolyte correction (particularly potassium).",
+        anki1: "Medical::Endocrine::DKA",
+        anki2: "Step2::Endocrine::Diabetes",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1502758"
+      },
+      {
+        id: 12,
+        name: "Acute Cholecystitis",
+        synonyms: ["Cholecystitis", "Acute Cholecystitis", "Gallbladder Inflammation"],
+        symptoms: [
+          "Inspiration causes sharp arrest of pain during palpation of the right upper quadrant (Murphy's sign).",
+          "Right upper quadrant pain radiating to the right shoulder or scapula (Boas' sign), accompanied by low-grade fever.",
+          "Ultrasonography reveals gallbladder wall thickening (>4mm), pericholecystic fluid, and presence of gallstones.",
+          "Leukocytosis with a mild elevation of alkaline phosphatase and transaminases.",
+          "Cholescintigraphy (HIDA scan) shows non-visualization of the gallbladder, indicating cystic duct obstruction."
+        ],
+        initialClue: "A 44-year-old overweight female presents to the clinic with persistent right upper quadrant abdominal pain that radiates to her right shoulder, beginning after a fatty meal.",
+        description: "Acute cholecystitis is acute inflammation of the gallbladder, usually resulting from gallstone obstruction of the cystic duct. Classic signs include Murphy's sign, RUQ pain, and fever. Diagnostic confirmation is achieved via RUQ ultrasound or HIDA scan. Treatment is surgical cholecystectomy.",
+        anki1: "Medical::Surgery::Cholecystitis",
+        anki2: "Step2::Surgery::HepatoBiliary",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp0800929"
+      },
+      {
+        id: 13,
+        name: "Rheumatoid Arthritis",
+        synonyms: ["RA", "Rheumatoid Arthritis"],
+        symptoms: [
+          "Symmetrical polyarthritis affecting the small joints of the hands and feet, with morning stiffness lasting >1 hour.",
+          "Progressive joint deformities, including ulnar deviation of the fingers, swan-neck deformities, and Boutonniere deformities.",
+          "Presence of subcutaneous rheumatoid nodules over pressure points like the elbows.",
+          "Serum is positive for Rheumatoid Factor (RF) and highly specific Anti-Cyclic Citrullinated Peptide (anti-CCP) antibodies.",
+          "Radiographs of the hands reveal marginal joint erosions and periarticular osteopenia."
+        ],
+        initialClue: "A 48-year-old female presents with pain, swelling, and stiffness in her fingers and wrists for the past 6 months, which is worst in the mornings.",
+        description: "Rheumatoid Arthritis (RA) is a chronic, systemic inflammatory autoimmune disease primarily characterized by symmetric, destructive polyarthritis of small joints. Pathogenesis involves synovial hypertrophy and pannus formation. Early treatment with DMARDs (e.g., methotrexate) is critical.",
+        anki1: "Medical::Rheumatology::RA",
+        anki2: "Step2::Rheum::Rheumatoid",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1001190"
+      },
+      {
+        id: 14,
+        name: "Guillain-Barré Syndrome",
+        synonyms: ["GBS", "Guillain-Barre Syndrome", "Guillain-Barré Syndrome", "Acute Inflammatory Demyelinating Polyradiculoneuropathy"],
+        symptoms: [
+          "Symmetric, ascending muscle weakness starting in the lower extremities, accompanied by decreased or absent deep tendon reflexes.",
+          "Autonomic instability, including labile blood pressure, cardiac arrhythmias, and urinary retention.",
+          "Cerebrospinal fluid analysis reveals albuminocytologic dissociation (elevated protein with normal white blood cell count).",
+          "Strong clinical association with a recent diarrheal illness caused by Campylobacter jejuni.",
+          "Treatment involves intravenous immunoglobulin (IVIG) or plasmapheresis; corticosteroids are not effective."
+        ],
+        initialClue: "A 32-year-old male presents to the clinic complaining of progressive weakness and tingling in both legs that began three days ago and has now spread to his hands.",
+        description: "Guillain-Barré Syndrome (GBS) is an acute, demyelinating polyneuropathy characteristically presenting as symmetric, ascending weakness and areflexia. Autonomic dysfunction and respiratory failure are potential life-threatening complications. Albuminocytologic dissociation in CSF is diagnostic.",
+        anki1: "Medical::Neurology::GBS",
+        anki2: "Step2::Neurology::Demyelinating",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1412170"
+      },
+      {
+        id: 15,
+        name: "Tuberculosis",
+        synonyms: ["TB", "Tuberculosis", "TB Infection"],
+        symptoms: [
+          "Chronic productive cough lasting >3 weeks, hemoptysis, night sweats, weight loss, and fever.",
+          "Chest X-ray shows upper lobe infiltrates with cavitary lesions.",
+          "Sputum smear is positive for Acid-Fast Bacilli (AFB) under Ziehl-Neelsen stain.",
+          "Histopathology of lung biopsy reveals necrotizing (caseating) granulomas.",
+          "Standard treatment regimen consists of a 4-drug combination: Rifampin, Isoniazid, Pyrazinamide, and Ethambutol (RIPE)."
+        ],
+        initialClue: "A 42-year-old male immigrant presents with a chronic cough, occasional coughing up of blood, severe night sweats, and an unexplained 15-lb weight loss over 3 months.",
+        description: "Tuberculosis (TB) is a chronic infectious disease caused by Mycobacterium tuberculosis. It primarily affects the lungs but can disseminate. Diagnosis relies on tuberculin skin testing/IGRA, sputum AFB smear, culture, and chest imaging. Standard therapy requires RIPE treatment.",
+        anki1: "Medical::Infectious::Tuberculosis",
+        anki2: "Step2::ID::Pulm",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1401402"
+      },
+      {
+        id: 16,
+        name: "Acute Pancreatitis",
+        synonyms: ["Pancreatitis", "Acute Pancreatitis"],
+        symptoms: [
+          "Epigastric abdominal pain that characteristically radiates straight through to the back and is partially relieved by leaning forward.",
+          "Nausea, vomiting, and in severe cases, bruising around the umbilicus (Cullen's sign) or on the flanks (Grey Turner's sign).",
+          "Serum lipase and amylase levels elevated to more than three times the upper limit of normal.",
+          "Most common etiologies are gallstones (biliary pancreatitis) and alcohol abuse.",
+          "Abdominal CT scan shows diffuse enlargement and edema of the pancreas with peripancreatic fluid collections."
+        ],
+        initialClue: "A 50-year-old male is admitted with severe, boring epigastric abdominal pain that radiates to his back, accompanied by persistent vomiting.",
+        description: "Acute pancreatitis is acute inflammatory pathology of the pancreas. Lipase is more specific than amylase. Management involves aggressive intravenous hydration, pain control, and bowel rest/early enteral nutrition. Complications include pancreatic pseudocysts and necrosis.",
+        anki1: "Medical::GI::Pancreatitis",
+        anki2: "Step2::GI::Pancreas",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp2032687"
+      },
+      {
+        id: 17,
+        name: "Gout",
+        synonyms: ["Gout", "Gouty Arthritis"],
+        symptoms: [
+          "Sudden, excruciating joint pain, redness, and swelling, most commonly affecting the first metatarsophalangeal joint (podagra).",
+          "Aspirated joint fluid reveals needle-shaped, negatively birefringent monosodium urate crystals.",
+          "Presence of chalky, subcutaneous deposits of urate crystals (tophi) in chronic cases, often on the ears or joints.",
+          "Acute flares are treated with NSAIDs (e.g., indomethacin), colchicine, or corticosteroids.",
+          "Chronic management involves uric acid-lowering therapy with xanthine oxidase inhibitors like allopurinol."
+        ],
+        initialClue: "A 54-year-old male wakes up in the middle of the night with sudden, excruciating pain, swelling, and redness in his left big toe.",
+        description: "Gout is a crystal arthropathy caused by monosodium urate crystal deposition in joints, driven by hyperuricemia. Classic presentation is podagra. Crystals appear yellow when parallel to the slow axis of the red compensator (negative birefringence). Allopurinol is used for prophylaxis.",
+        anki1: "Medical::Rheumatology::Gout",
+        anki2: "Step2::Rheum::CrystalArthritis",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1312961"
+      },
+      {
+        id: 18,
+        name: "Crohn's Disease",
+        synonyms: ["Crohn's Disease", "Crohns Disease", "Crohn Disease", "Regional Enteritis"],
+        symptoms: [
+          "Transmural inflammation that can affect any part of the gastrointestinal tract from the mouth to the anus, often showing 'skip lesions'.",
+          "Abdominal pain (often RLQ), watery/diarrheal stools, weight loss, and aphthous ulcers in the mouth.",
+          "Colonoscopy reveals a 'cobblestone' appearance of the mucosa and linear mucosal ulcerations.",
+          "Biopsy of the affected intestine shows non-caseating granulomas.",
+          "Strong association with extraintestinal complications like bowel fistulas, strictures, perianal abscesses, and gallstones."
+        ],
+        initialClue: "A 23-year-old female presents with recurrent right lower quadrant cramping abdominal pain, chronic watery diarrhea, and a weight loss of 12 lbs over the past year.",
+        description: "Crohn's disease is a chronic inflammatory bowel disease (IBD) that causes transmural, skip-lesion inflammation anywhere in the GI tract, most commonly the terminal ileum. Key features are non-caseating granulomas and cobblestoning. Fistula formation is a common complication.",
+        anki1: "Medical::GI::Crohns",
+        anki2: "Step2::GI::IBD",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1202909"
+      },
+      {
+        id: 19,
+        name: "Alzheimer's Disease",
+        synonyms: ["Alzheimer's Disease", "Alzheimer Disease", "Alzheimers"],
+        symptoms: [
+          "Insidious onset and progressive decline in short-term memory, orientation, and cognitive executive function.",
+          "Neuropsychiatric symptoms, including apathy, depression, irritability, and in later stages, wandering and paranoia.",
+          "MRI of the brain shows generalized cortical atrophy, particularly prominent in the temporal lobes and hippocampi.",
+          "Histopathology reveals extracellular amyloid-beta plaques and intracellular neurofibrillary tangles (hyperphosphorylated tau protein).",
+          "Primary pharmacotherapy includes cholinesterase inhibitors (e.g., donepezil, rivastigmine) and NMDA receptor antagonists (memantine)."
+        ],
+        initialClue: "A 74-year-old female is brought to the clinic by her family because she has been repeatedly asking the same questions, misplacing items, and getting lost in her own neighborhood.",
+        description: "Alzheimer's disease is the most common cause of dementia in older adults. It is characterized by progressive cognitive decline, memory impairment, and deposition of beta-amyloid plaques and tau tangles. Treatment is supportive and symptomatic.",
+        anki1: "Medical::Neurology::Alzheimers",
+        anki2: "Step2::Neurology::Dementia",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp043374"
+      },
+      {
+        id: 20,
+        name: "Mitral Valve Prolapse",
+        synonyms: ["MVP", "Mitral Valve Prolapse", "Barlow's Syndrome"],
+        symptoms: [
+          "Auscultation reveals a mid-systolic click, often followed by a late systolic murmur.",
+          "Murmur changes: click occurs earlier and murmur becomes longer/louder with standing or Valsalva maneuver (which decreases venous return).",
+          "Strong clinical association with connective tissue disorders such as Marfan syndrome or Ehlers-Danlos syndrome.",
+          "Echocardiography shows displacement of one or both mitral valve leaflets into the left atrium during systole.",
+          "Histopathology of the valve reveals myxomatous degeneration of the leaflets."
+        ],
+        initialClue: "A 22-year-old tall, slender female with hypermobile joints presents to the clinic for a routine physical exam and is noted to have a unique heart sound.",
+        description: "Mitral Valve Prolapse (MVP) is the most common valvular heart disease, caused by myxomatous degeneration of the mitral valve leaflets and chordae tendineae. Auscultation is characterized by a mid-systolic click and late systolic murmur. Standing/Valsalva maneuvers increase the murmur.",
+        anki1: "Medical::Cardiology::MVP",
+        anki2: "Step2::Cardio::Valvular",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp0808277"
+      },
+      {
+        id: 21,
+        name: "Infective Endocarditis",
+        synonyms: ["IE", "Infective Endocarditis", "Endocarditis"],
+        symptoms: [
+          "New or changing heart murmur, persistent fever, chills, and night sweats.",
+          "Classic microembolic physical findings: painful nodules on fingers/toes (Osler nodes), painless erythematous spots on palms/soles (Janeway lesions).",
+          "Ophthalmoscopic exam reveals retinal hemorrhages with pale centers (Roth spots), and splinter hemorrhages under nails.",
+          "Multiple positive blood cultures growing typical organisms (e.g., Staphylococcus aureus, Streptococcus viridans).",
+          "Echocardiogram reveals oscillating intracardiac vegetation on a valve leaflet."
+        ],
+        initialClue: "A 36-year-old intravenous drug user is admitted to the hospital with a high fever, severe fatigue, and a new systolic murmur over the apex.",
+        description: "Infective Endocarditis is an infection of the endocardial surface of the heart, most commonly the valves. Key findings are fever, murmur, and immunological/embolic phenomena (Duke criteria). IV drug users are prone to tricuspid valve involvement.",
+        anki1: "Medical::Cardiology::Endocarditis",
+        anki2: "Step2::Cardio::Infections",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1206786"
+      },
+      {
+        id: 22,
+        name: "Chronic Obstructive Pulmonary Disease",
+        synonyms: ["COPD", "Chronic Obstructive Pulmonary Disease", "Emphysema", "Chronic Bronchitis"],
+        symptoms: [
+          "Progressive dyspnea, chronic productive cough, wheezing, and chest tightness.",
+          "Physical exam reveals a hyperresonant chest, prolonged expiratory phase, pursed-lip breathing, and a barrel chest.",
+          "Spirometry demonstrates an obstructive pattern: FEV1/FVC ratio less than 0.70 after bronchodilator administration.",
+          "Strong correlation with tobacco smoke exposure, occasionally caused by Alpha-1 Antitrypsin deficiency.",
+          "Chest X-ray shows hyperinflation of lungs, flattened diaphragms, and an increased retrosternal space."
+        ],
+        initialClue: "A 66-year-old male with a 40 pack-year smoking history presents with a worsening chronic cough productive of morning phlegm and severe shortness of breath during exertion.",
+        description: "Chronic Obstructive Pulmonary Disease (COPD) is a progressive lung disease characterized by chronic airflow limitation. It encompasses emphysema and chronic bronchitis. Diagnosis is established via post-bronchodilator spirometry (FEV1/FVC < 0.70).",
+        anki1: "Medical::Pulmonology::COPD",
+        anki2: "Step2::Pulm::AirwayDisease",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1601187"
+      },
+      {
+        id: 23,
+        name: "Sjögren's Syndrome",
+        synonyms: ["Sjogren's Syndrome", "Sjogrens", "Sjögren Syndrome", "Sjögrens"],
+        symptoms: [
+          "Severe dry eyes (keratoconjunctivitis sicca) and dry mouth (xerostomia) causing difficulty chewing or swallowing dry foods.",
+          "Enlargement of salivary glands, particularly bilateral parotid gland swelling, and dental caries.",
+          "Positive serology for highly specific anti-SSA (Ro) and anti-SSB (La) autoantibodies.",
+          "Schirmer's test reveals diminished tear production (<5mm wetting in 5 minutes).",
+          "Minor salivary gland biopsy of the lip confirms focal lymphocytic sialadenitis."
+        ],
+        initialClue: "A 49-year-old female reports a persistent gritty sensation in her eyes as if there is sand in them, along with dry mouth requiring constant sips of water.",
+        description: "Sjögren's syndrome is a chronic autoimmune disease characterized by lymphocytic infiltration of exocrine glands, leading to dry eyes and dry mouth. It can occur primary or secondary to other autoimmune diseases like RA or SLE. Complications include MALT lymphoma.",
+        anki1: "Medical::Rheumatology::Sjogrens",
+        anki2: "Step2::Rheum::Autoimmune",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1405214"
+      },
+      {
+        id: 24,
+        name: "Chronic Kidney Disease",
+        synonyms: ["CKD", "Chronic Kidney Disease", "Chronic Renal Failure"],
+        symptoms: [
+          "Progressive decline in renal filtration capacity lasting more than 3 months, often asymptomatic in early stages.",
+          "Development of uremic symptoms in advanced stages: fatigue, pruritus, uremic frost, metallic taste, and pericarditis.",
+          "Persistent proteinuria (albumin-to-creatinine ratio >30 mg/g) or structural abnormalities on renal ultrasound.",
+          "Laboratory results show a persistently reduced Estimated Glomerular Filtration Rate (eGFR) < 60 mL/min/1.73m².",
+          "Most common underlying etiologies are long-standing diabetes mellitus and systemic hypertension."
+        ],
+        initialClue: "A 58-year-old male with a 15-year history of poorly controlled hypertension is noted to have an elevated serum creatinine of 2.1 mg/dL during a routine laboratory panel.",
+        description: "Chronic Kidney Disease (CKD) is characterized by a gradual loss of kidney function over time, staged primarily by eGFR and albuminuria. Classic complications include hyperkalemia, metabolic acidosis, anemia of chronic disease, and secondary hyperparathyroidism.",
+        anki1: "Medical::Nephrology::CKD",
+        anki2: "Step2::Nephrology::RenalFailure",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1111532"
+      },
+      {
+        id: 25,
+        name: "Sepsis",
+        synonyms: ["Sepsis", "Septic Shock", "Blood Poisoning"],
+        symptoms: [
+          "Dysregulated host response to infection causing life-threatening organ dysfunction, tracked by an increase in Sequential Organ Failure Assessment (SOFA) score.",
+          "Altered mental status, tachypnea (RR >= 22/min), and systolic blood pressure <= 100 mmHg (qSOFA criteria).",
+          "Persistent hypotension requiring vasopressors (e.g., norepinephrine) to maintain MAP >= 65 mmHg despite adequate fluid resuscitation.",
+          "Serum lactate concentration elevated above 2 mmol/L.",
+          "Management requires early administration of broad-spectrum intravenous antibiotics and isotonic crystalloid fluids (30 mL/kg)."
+        ],
+        initialClue: "A 72-year-old female nursing home resident with a urinary tract infection is brought to the ER with confusion, severe shaking chills, and a blood pressure of 82/46 mmHg.",
+        description: "Sepsis is defined as life-threatening organ dysfunction caused by a dysregulated host response to infection. Septic shock represents a subset where underlying circulatory and cellular/metabolic abnormalities increase mortality, marked by refractory hypotension and hyperlactatemia.",
+        anki1: "Medical::Infectious::Sepsis",
+        anki2: "Step2::ID::Sepsis",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1211936"
+      },
+      {
+        id: 26,
+        name: "Stroke",
+        synonyms: ["Stroke", "Ischemic Stroke", "Brain Attack", "Cerebral Infarction"],
+        symptoms: [
+          "Sudden-onset focal neurological deficits, including hemiparesis, facial droop, and expressive or receptive aphasia.",
+          "Non-contrast CT scan of the head shows no evidence of intracranial hemorrhage, ruling out bleed.",
+          "Diffusion-weighted MRI (DWI) reveals hyperintensity indicating cytotoxic edema in a vascular territory (e.g., MCA).",
+          "Etiology frequently linked to atrial fibrillation, carotid artery stenosis, or large artery atherosclerosis.",
+          "Intravenous thrombolysis (tissue plasminogen activator / tPA) is indicated within 4.5 hours of symptom onset."
+        ],
+        initialClue: "A 68-year-old female presents to the emergency department with sudden weakness in her right arm and difficulty speaking that began 90 minutes ago.",
+        description: "Ischemic stroke occurs due to focal cerebral ischemia leading to infarction. Initial imaging requires non-contrast head CT to rule out hemorrhage. Eligible patients receive thrombolysis or endovascular thrombectomy. Antiplatelet therapy and statins are used for secondary prevention.",
+        anki1: "Medical::Neurology::Stroke",
+        anki2: "Step2::Neurology::Stroke",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1007934"
+      },
+      {
+        id: 27,
+        name: "Shingles",
+        synonyms: ["Shingles", "Herpes Zoster"],
+        symptoms: [
+          "Unilateral, painful vesicular eruption that is strictly dermatomal (does not cross the midline).",
+          "Intense prodromal burning, itching, or tingling pain along the affected dermatome prior to rash onset.",
+          "Strong correlation with reactivation of latent Varicella-Zoster Virus (VZV) in the dorsal root ganglia.",
+          "Most common chronic complication is severe, persistent pain lasting months (postherpetic neuralgia).",
+          "Treatment involves oral antiviral therapy (e.g., acyclovir, valacyclovir) initiated within 72 hours of rash onset."
+        ],
+        initialClue: "A 61-year-old female presents with a cluster of painful, fluid-filled blisters on a red base wrapping around the right side of her torso.",
+        description: "Herpes Zoster (Shingles) is caused by reactivation of latent VZV. It presents with a painful dermatomal rash. Tzanck smear showing multinucleated giant cells is a classic (but non-specific) test. Shingrix vaccine is recommended for adults over 50 for prevention.",
+        anki1: "Medical::Infectious::Shingles",
+        anki2: "Step2::ID::VZV",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp003009"
+      },
+      {
+        id: 28,
+        name: "Iron Deficiency Anemia",
+        synonyms: ["Iron Deficiency Anemia", "IDA", "Iron Deficiency"],
+        symptoms: [
+          "Microcytic, hypochromic red blood cells on peripheral blood smear with anisocytosis (elevated RDW).",
+          "Severe fatigue, pallor, weakness, and occasionally pica (craving non-food items like ice or clay).",
+          "Physical findings: brittle, spoon-shaped nails (koilonychia) and smooth red tongue (glossitis).",
+          "Serum iron studies show low ferritin, low serum iron, and elevated Total Iron Binding Capacity (TIBC).",
+          "Most common cause in postmenopausal women and adult men is gastrointestinal blood loss, requiring colonoscopy."
+        ],
+        initialClue: "A 38-year-old female with heavy menstrual cycles presents complaining of worsening fatigue, shortness of breath on exertion, and a strange craving for chewing ice.",
+        description: "Iron deficiency anemia is the most common cause of anemia worldwide. It presents with microcytosis (MCV < 80) and low ferritin (the most specific marker). Treatment is oral or IV iron replacement. Identifying the underlying cause of blood loss is mandatory.",
+        anki1: "Medical::Hematology::IDA",
+        anki2: "Step2::Heme::Anemia",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1212100"
+      },
+      {
+        id: 29,
+        name: "Pilocytic Astrocytoma",
+        synonyms: ["Pilocytic Astrocytoma", "Astrocytoma"],
+        symptoms: [
+          "Most common primary brain tumor in children, typically located in the posterior fossa (cerebellum).",
+          "Presents with signs of increased intracranial pressure (headache, morning vomiting) and cerebellar dysfunction (ataxia).",
+          "MRI reveals a well-demarcated cystic lesion with a brightly enhancing mural nodule in the cerebellum.",
+          "Histopathology shows bipolar cells with hair-like processes (Rosenthal fibers) and eosinophilic granular bodies.",
+          "Usually benign (WHO Grade I) with an excellent prognosis following complete surgical resection."
+        ],
+        initialClue: "An 8-year-old boy is brought to the clinic due to worsening headaches, morning vomiting, and a new unsteady, stumbling gait over the past month.",
+        description: "Pilocytic Astrocytoma is a slow-growing, benign brain tumor primarily affecting children. It is characterized by Rosenthal fibers and a cystic lesion with an enhancing mural nodule. Surgical excision is usually curative.",
+        anki1: "Medical::Neurology::Astrocytoma",
+        anki2: "Step2::Neurology::BrainTumor",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1213554"
+      },
+      {
+        id: 30,
+        name: "Epilepsy",
+        synonyms: ["Epilepsy", "Seizure Disorder", "Seizures"],
+        symptoms: [
+          "Recurrent, unprovoked seizures due to abnormal, hypersynchronous neuronal activity in the brain.",
+          "Can present as generalized tonic-clonic episodes with loss of consciousness, tongue biting, and urinary incontinence.",
+          "Electroencephalogram (EEG) displays paroxysmal activity like generalized spike-and-wave discharges.",
+          "Antiepileptic drug selection depends on seizure type (e.g., valproate, levetiracetam, lamotrigine).",
+          "Postictal phase characterized by temporary confusion, lethargy, or transient neurological weakness (Todd's paresis)."
+        ],
+        initialClue: "A 22-year-old male is brought to the emergency department after experiencing two sudden episodes of generalized convulsions and loss of consciousness today.",
+        description: "Epilepsy is defined by two or more unprovoked seizures. Diagnosis relies on history, EEG, and brain MRI to rule out structural lesions. Anticonvulsant choice is tailored to patient profiles, with levetiracetam (Keppra) commonly used as first-line.",
+        anki1: "Medical::Neurology::Epilepsy",
+        anki2: "Step2::Neurology::Seizures",
+        nejmLink: "https://www.nejm.org/doi/full/10.1056/NEJMcp1311910"
+      }
+    ];
+
+        // Load custom cases generated by Gemini AI from local storage if they exist
+    const savedCustomCases = localStorage.getItem('doctoraj_custom_cases');
+    if (savedCustomCases) {
+      try {
+        const parsed = JSON.parse(savedCustomCases);
+        parsed.forEach((c, idx) => {
+          c.id = 31 + idx; // Assign IDs starting from 31 (after the 30 built-in cases)
+          ALL_CASES.push(c);
+        });
+      } catch (e) {
+        console.error("Error loading custom cases from local storage", e);
+      }
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const archiveId = urlParams.get('archive');
+    let isArchive = false;
+    let currentCase = null;
+
+    if (archiveId && !isNaN(archiveId)) {
+      const matched = ALL_CASES.find(c => c.id == parseInt(archiveId));
+      if (matched) {
+        currentCase = matched;
+        isArchive = true;
+      }
+    }
+
+    // Migrate old daily-game completions to archive keys (one-time backfill)
+    // This ensures cases solved before the archive-key fix are properly skipped
+    try {
+      for (let k = 0; k < localStorage.length; k++) {
+        const key = localStorage.key(k);
+        // Match keys like "doctoraj_123_Mon May 24 2026"
+        if (key && key.startsWith('doctoraj_') &&
+            !key.includes('_archive_') &&
+            !key.includes('_custom_') &&
+            !key.includes('_ga_consent') &&
+            !key.includes('_rules_seen') &&
+            !key.includes('_theme') &&
+            !key.includes('_gemini_key')) {
+          // Extract case id: the number right after "doctoraj_" before the next "_"
+          const parts = key.replace('doctoraj_', '').split('_');
+          const caseIdStr = parts[0];
+          if (caseIdStr && !isNaN(caseIdStr)) {
+            const caseId = parseInt(caseIdStr, 10);
+            // Only migrate if not already set
+            if (!localStorage.getItem(`doctoraj_archive_${caseId}_played`)) {
+              try {
+                const raw = localStorage.getItem(key);
+                if (raw) {
+                  const state = JSON.parse(raw);
+                  if (state && state.gameCompleted) {
+                    localStorage.setItem(`doctoraj_archive_${caseId}_played`, 'true');
+                    if (state.gameResult && state.gameResult.won) {
+                      localStorage.setItem(`doctoraj_archive_${caseId}_solved`, 'true');
+                    }
+                  }
+                }
+              } catch (e) { /* malformed entry, skip */ }
+            }
+          }
+        }
+      }
+    } catch (e) { /* migration failed silently */ }
+
+    if (!currentCase) {
+      const startDate = new Date('2025-07-16T00:00:00-05:00');
+      const now = new Date();
+      const daysSinceStart = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+      const todayIndex = daysSinceStart % ALL_CASES.length;
+      
+      let selectedCase = ALL_CASES[todayIndex];
+      const isCaseSolved = (caseId) => {
+        return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
+               localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
+      };
+
+      if (isCaseSolved(selectedCase.id)) {
+        for (let i = 1; i < ALL_CASES.length; i++) {
+          const nextIndex = (todayIndex + i) % ALL_CASES.length;
+          const candidate = ALL_CASES[nextIndex];
+          if (!isCaseSolved(candidate.id)) {
+            selectedCase = candidate;
+            break;
+          }
+        }
+      }
+      currentCase = selectedCase;
+    }
+
+    const doctordleData = document.getElementById('doctoraj-data');
+    doctordleData.setAttribute('data-id', currentCase.id);
+    doctordleData.setAttribute('data-archive', isArchive ? 'true' : 'false');
+    doctordleData.setAttribute('data-synonyms', JSON.stringify(currentCase.synonyms || []));
+    window.NEJM_LINK = currentCase.nejmLink;
+
+    // Compute adjacent case IDs for navigation (skipping solved cases)
+    let prevCaseId = null;
+    let nextCaseId = null;
+    if (currentCase) {
+      const isCaseSolved = (caseId) => {
+        return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
+               localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
+      };
+      
+      const currentIdx = ALL_CASES.findIndex(c => c.id === currentCase.id);
+      if (currentIdx !== -1) {
+        // Find next unsolved case
+        let nextIdx = (currentIdx + 1) % ALL_CASES.length;
+        while (nextIdx !== currentIdx) {
+          if (!isCaseSolved(ALL_CASES[nextIdx].id)) {
+            break;
+          }
+          nextIdx = (nextIdx + 1) % ALL_CASES.length;
+        }
+        nextCaseId = ALL_CASES[nextIdx].id;
+
+        // Find prev unsolved case
+        let prevIdx = (currentIdx - 1 + ALL_CASES.length) % ALL_CASES.length;
+        while (prevIdx !== currentIdx) {
+          if (!isCaseSolved(ALL_CASES[prevIdx].id)) {
+            break;
+          }
+          prevIdx = (prevIdx - 1 + ALL_CASES.length) % ALL_CASES.length;
+        }
+        prevCaseId = ALL_CASES[prevIdx].id;
+      }
+    }
+
+        // Combine playable cases and search-only suggestions to expand vocabulary
+    const EXTRA_SUGGESTIONS = [
+      "Acne Vulgaris",
+      "ADHD (Attention Deficit Hyperactivity Disorder)",
+      "Alzheimer's Disease",
+      "Amyotrophic Lateral Sclerosis (ALS)",
+      "Anemia of Chronic Disease",
+      "Ankylosing Spondylitis",
+      "Anorexia Nervosa",
+      "Aplastic Anemia",
+      "Atherosclerosis",
+      "Atrial Fibrillation",
+      "Autism Spectrum Disorder",
+      "Bacterial Vaginosis",
+      "Bipolar Disorder",
+      "Bladder Cancer",
+      "Brain Tumor",
+      "Breast Cancer",
+      "Bronchiectasis",
+      "Bronchitis",
+      "Brugada Syndrome",
+      "Bulimia Nervosa",
+      "Campylobacteriosis",
+      "Cardiac Tamponade",
+      "Carpal Tunnel Syndrome",
+      "Cataract",
+      "Cerebral Palsy",
+      "Chlamydial Infection",
+      "Cholecystitis",
+      "Cholelithiasis (Gallstones)",
+      "Cholera",
+      "Chronic Kidney Disease",
+      "Chronic Obstructive Pulmonary Disease (COPD)",
+      "Cirrhosis of the Liver",
+      "Coarctation of the Aorta",
+      "Cocaine Intoxication",
+      "Colorectal Cancer",
+      "Common Cold",
+      "Congestive Heart Failure (CHF)",
+      "Contact Dermatitis",
+      "Coronary Artery Disease",
+      "COVID-19",
+      "Crohn's Disease",
+      "Cushing's Syndrome",
+      "Cystic Fibrosis",
+      "Deep Vein Thrombosis (DVT)",
+      "Dehydration",
+      "Delirium Tremens",
+      "Dementia",
+      "Dengue Fever",
+      "Depression (Major Depressive Disorder)",
+      "Dermatomyositis",
+      "Diabetes Mellitus Type 1",
+      "Diabetes Mellitus Type 2",
+      "Diabetic Ketoacidosis (DKA)",
+      "Diverticulitis",
+      "Down Syndrome",
+      "Dressler Syndrome",
+      "Dumping Syndrome",
+      "Ectopic Pregnancy",
+      "Eczema (Atopic Dermatitis)",
+      "Endocarditis",
+      "Endometrial Cancer",
+      "Endometriosis",
+      "Encephalitis",
+      "Epilepsy (Seizure Disorder)",
+      "Erectile Dysfunction",
+      "Erysipelas",
+      "Esophageal Candidiasis",
+      "Esophageal Varices",
+      "Essential Hypertension",
+      "Fibrocystic Breast Changes",
+      "Fibromyalgia",
+      "Focal Segmental Glomerulosclerosis (FSGS)",
+      "Food Poisoning",
+      "G6PD Deficiency",
+      "Gallstones",
+      "Gastric Cancer",
+      "Gastritis",
+      "Gastroesophageal Reflux Disease (GERD)",
+      "Generalized Anxiety Disorder",
+      "Gestational Diabetes",
+      "Glaucoma",
+      "Glomerulonephritis",
+      "Glomus Tumor",
+      "Gonorrhea",
+      "Gout (Hyperuricemia)",
+      "Guillain-Barré Syndrome",
+      "Hashimoto's Thyroiditis",
+      "Heart Failure",
+      "Hemolytic Uremic Syndrome (HUS)",
+      "Hemophilia A",
+      "Hemophilia B",
+      "Hepatitis A",
+      "Hepatitis B",
+      "Hepatitis C",
+      "Hepatitis D",
+      "Hepatocellular Carcinoma (HCC)",
+      "Herpes Simplex Virus (HSV)",
+      "Hodgkin Lymphoma",
+      "Huntington's Disease",
+      "Hyperparathyroidism",
+      "Hyperthyroidism",
+      "Hypothyroidism",
+      "Immune Thrombocytopenia (ITP)",
+      "Impetigo",
+      "Influenza (Flu)",
+      "Insulinoma",
+      "Iron Deficiency Anemia",
+      "Irritable Bowel Syndrome (IBS)",
+      "Kidney Stones (Nephrolithiasis)",
+      "Lead Poisoning",
+      "Legionnaires' Disease",
+      "Leukemia (ALL/AML/CLL/CML)",
+      "Lyme Disease",
+      "Macular Degeneration",
+      "Malaria",
+      "Malignant Melanoma",
+      "Meniere's Disease",
+      "Meningitis",
+      "Menopause",
+      "Mitral Valve Prolapse",
+      "Monoclonal Gammopathy (MGUS)",
+      "Multiple Myeloma",
+      "Mumps",
+      "Myocardial Infarction (Heart Attack)",
+      "Myocarditis",
+      "Nephrotic Syndrome",
+      "Neurofibromatosis Type 1",
+      "Nicotine Withdrawal",
+      "Norovirus Gastroenteritis",
+      "Obesity",
+      "Obsessive-Compulsive Disorder (OCD)",
+      "Opioid Withdrawal",
+      "Osteoarthrosis",
+      "Osteomyelitis",
+      "Osteoporosis",
+      "Otitis Externa (Swimmer's Ear)",
+      "Otitis Media",
+      "Ovarian Cancer",
+      "Pancreatic Adenocarcinoma",
+      "Pancreatitis (Acute/Chronic)",
+      "Panic Disorder",
+      "Parkinson's Disease",
+      "Parvovirus B19 (Fifth Disease)",
+      "Patellofemoral Pain Syndrome",
+      "Peptic Ulcer Disease (PUD)",
+      "Pericarditis",
+      "Peripheral Artery Disease (PAD)",
+      "Pityriasis Rosea",
+      "Plantar Fasciitis",
+      "Pneumocystis Jirovecii Pneumonia (PCP)",
+      "Pneumonia",
+      "Pneumothorax",
+      "Polycystic Kidney Disease",
+      "Polycystic Ovary Syndrome (PCOS)",
+      "Polymyalgia Rheumatica (PMR)",
+      "Polymyositis",
+      "Portal Hypertension",
+      "Post-Traumatic Stress Disorder (PTSD)",
+      "Preeclampsia",
+      "Prolonged QT Syndrome",
+      "Prostate Cancer",
+      "Psoriasis",
+      "Pyelonephritis",
+      "Rabies",
+      "Raynaud's Phenomenon",
+      "Renal Cell Carcinoma (RCC)",
+      "Rheumatoid Arthritis",
+      "Roseola Infantum",
+      "Rotator Cuff Tear",
+      "Rubella (German Measles)",
+      "Sarcoidosis",
+      "Schizophrenia",
+      "Scleroderma (Systemic Sclerosis)",
+      "Seborrheic Dermatitis",
+      "Sepsis (Septicemia)",
+      "Shingles (Herpes Zoster)",
+      "Sideroblastic Anemia",
+      "Sjögren's Syndrome",
+      "Squamous Cell Carcinoma",
+      "Stevens-Johnson Syndrome (SJS)",
+      "Stroke (Ischemic/Hemorrhagic)",
+      "Subarachnoid Hemorrhage (SAH)",
+      "Syphilis",
+      "Systemic Lupus Erythematosus (SLE)",
+      "Tension Headache",
+      "Testicular Torsion",
+      "Tetralogy of Fallot",
+      "Thalassemia",
+      "Thromboangiitis Obliterans (Buerger's)",
+      "Thyroid Adenoma",
+      "Thyroid Medullary Carcinoma",
+      "Thyroid Papillary Carcinoma",
+      "Toxoplasmosis",
+      "Transient Ischemic Attack (TIA)",
+      "Trichomoniasis",
+      "Trigeminal Neuralgia",
+      "Tuberculosis",
+      "Turner Syndrome",
+      "Typhoid Fever",
+      "Ulcerative Colitis",
+      "Urinary Tract Infection (UTI)",
+      "Uterine Atony",
+      "Uterine Fibroids",
+      "Varicose Veins",
+      "Vasculitis",
+      "Vitiligo",
+      "Zollinger-Ellison Syndrome"
+    ];
+
+        const searchSuggestions = [];
+    const currentSynonyms = (currentCase.synonyms || []).map(s => s.toLowerCase());
+    
+    // Add active playable cases first (maintaining correct IDs)
+    ALL_CASES.forEach(c => {
+      searchSuggestions.push({ id: c.id.toString(), name: c.name });
+      
+      // Also register case synonyms with the same case ID
+      if (c.synonyms) {
+        c.synonyms.forEach(syn => {
+          if (!searchSuggestions.some(s => s.name.toLowerCase() === syn.toLowerCase())) {
+            searchSuggestions.push({ id: c.id.toString(), name: syn });
+          }
+        });
+      }
+    });
+    
+    // Add additional suggestions to expand vocabulary
+    let nextId = 100;
+    EXTRA_SUGGESTIONS.forEach(name => {
+      const lowerName = name.toLowerCase();
+      
+      // Check if this extra suggestion is a synonym of the current case
+      const isCurrentSynonym = currentSynonyms.includes(lowerName);
+      
+      if (isCurrentSynonym) {
+        // Map it directly to today's case ID!
+        if (!searchSuggestions.some(s => s.name.toLowerCase() === lowerName)) {
+          searchSuggestions.push({ id: currentCase.id.toString(), name: name });
+        }
+      } else {
+        // Assign standard unique ID
+        if (!searchSuggestions.some(s => s.name.toLowerCase() === lowerName) &&
+            !ALL_CASES.some(c => c.name.toLowerCase() === lowerName) &&
+            !ALL_CASES.some(c => (c.synonyms || []).map(s => s.toLowerCase()).includes(lowerName))) {
+          searchSuggestions.push({ id: (nextId++).toString(), name: name });
+        }
+      }
+    });
+
+    document.getElementById('disease-data').textContent = JSON.stringify(searchSuggestions);
+    document.getElementById('symptom-data').textContent = JSON.stringify(currentCase.symptoms);
+    document.getElementById('description-data').textContent = JSON.stringify(currentCase.description);
+    document.getElementById('anki1-data').textContent = JSON.stringify(currentCase.anki1);
+    document.getElementById('anki2-data').textContent = JSON.stringify(currentCase.anki2);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('guess_one').textContent = currentCase.initialClue;
+
+      const banner = document.getElementById('archive-banner');
+      const numEl = document.getElementById('archive-case-num');
+      if (isArchive) {
+        banner.classList.remove('hidden');
+        numEl.textContent = currentCase.id;
+      }
+
+      const savedTheme = localStorage.getItem('doctoraj_theme') || 'standard';
+      document.documentElement.dataset.theme = savedTheme;
+      
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      themeBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.dataset.theme;
+        const newTheme = currentTheme === 'nejm' ? 'standard' : 'nejm';
+        document.documentElement.dataset.theme = newTheme;
+        localStorage.setItem('doctoraj_theme', newTheme);
+        window.location.reload();
+      });
+
+      // Case Navigation (Next/Prev Buttons)
+      const prevBtn = document.getElementById('btn-prev-case');
+      const nextBtn = document.getElementById('btn-next-case');
+      const prevBtnMobile = document.getElementById('btn-prev-case-mobile');
+      const nextBtnMobile = document.getElementById('btn-next-case-mobile');
+
+      const navigateToCase = (caseId) => {
+        const params = new URLSearchParams(window.location.search);
+        params.set('archive', caseId);
+        params.set('play', 'true');
+        window.location.href = 'index.html?' + params.toString();
+      };
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (prevCaseId) navigateToCase(prevCaseId);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (nextCaseId) navigateToCase(nextCaseId);
+        });
+      }
+      if (prevBtnMobile) {
+        prevBtnMobile.addEventListener('click', () => {
+          if (prevCaseId) navigateToCase(prevCaseId);
+        });
+      }
+      if (nextBtnMobile) {
+        nextBtnMobile.addEventListener('click', () => {
+          if (nextCaseId) navigateToCase(nextCaseId);
+        });
+      }
+
+      const rulesModal = document.getElementById('rules-modal');
+      const rulesBtn = document.getElementById('rules-btn');
+      const rulesClose = document.getElementById('rules-close-btn');
+      const rulesStart = document.getElementById('rules-start-btn');
+
+      const openRules = () => {
+        rulesModal.classList.remove('modal-hidden');
+        rulesModal.classList.add('modal-visible');
+      };
+      
+      const closeRules = () => {
+        rulesModal.classList.remove('modal-visible');
+        rulesModal.classList.add('modal-hidden');
+        localStorage.setItem('doctoraj_rules_seen', 'true');
+      };
+
+      rulesBtn.addEventListener('click', openRules);
+      rulesClose.addEventListener('click', closeRules);
+      rulesStart.addEventListener('click', closeRules);
+
+      // Landing View & Game View Transitions
+      const landingView = document.getElementById('landing-view');
+      const gameView = document.getElementById('game-view');
+      const startBtn = document.getElementById('btn-start-diagnosing');
+      const browseBtn = document.getElementById('btn-browse-archive');
+      const logoArea = document.querySelector('.logo-area');
+      const playDailyFooter = document.getElementById('footer-play-daily');
+      const openArchiveFooter = document.getElementById('footer-open-archive');
+
+      const showGame = () => {
+        landingView.classList.add('hidden');
+        gameView.classList.remove('hidden');
+        if (window.showCompletedModal) {
+          window.showCompletedModal();
+        }
+      };
+
+      const showLanding = () => {
+        gameView.classList.add('hidden');
+        landingView.classList.remove('hidden');
+      };
+
+      // Set initial view based on query parameters
+      const playParam = urlParams.get('play');
+      if (isArchive || playParam === 'true') {
+        showGame();
+      } else {
+        showLanding();
+      }
+
+      if (startBtn) {
+        startBtn.addEventListener('click', () => {
+          showGame();
+          window.history.pushState({}, '', '?play=true');
+        });
+      }
+
+      if (browseBtn) {
+        browseBtn.addEventListener('click', () => {
+          showGame();
+          window.history.pushState({}, '', '?play=true');
+          // Trigger click on archive button to open drawer
+          document.getElementById('archive-btn-header').click();
+        });
+      }
+
+      if (logoArea) {
+        logoArea.addEventListener('click', () => {
+          showLanding();
+          window.history.pushState({}, '', window.location.pathname);
+        });
+      }
+
+      if (playDailyFooter) {
+        playDailyFooter.addEventListener('click', (e) => {
+          e.preventDefault();
+          showGame();
+          window.history.pushState({}, '', '?play=true');
+        });
+      }
+
+      const archiveModal = document.getElementById('archive-modal');
+      const archiveBtn = document.getElementById('archive-btn-header');
+      const archiveClose = document.getElementById('archive-close-btn');
+      const archiveGrid = document.getElementById('archive-cases-grid');
+
+      const openArchive = () => {
+        archiveGrid.innerHTML = ALL_CASES.map(c => {
+          const isSolved = localStorage.getItem(`doctoraj_archive_${c.id}_solved`) === 'true';
+          const isPlayed = localStorage.getItem(`doctoraj_archive_${c.id}_played`) === 'true';
+          let statusBadge = '<span class="badge badge-unplayed">Not Played</span>';
+          if (isSolved) {
+            statusBadge = '<span class="badge badge-solved">Solved</span>';
+          } else if (isPlayed) {
+            statusBadge = '<span class="badge badge-failed">Failed</span>';
+          }
+
+          return `
+            <div class="archive-card" onclick="window.location.href='index.html?archive=${c.id}'">
+              <div class="archive-card-header">
+                <span class="archive-card-number">Case #${c.id}</span>
+                ${statusBadge}
+              </div>
+              <p class="archive-card-clue">${c.initialClue.substring(0, 100)}...</p>
+              <div class="archive-card-action">Play Case &rarr;</div>
+            </div>
+          `;
+        }).join('');
+
+        archiveModal.classList.remove('modal-hidden');
+        archiveModal.classList.add('modal-visible');
+      };
+
+      archiveBtn.addEventListener('click', openArchive);
+      if (openArchiveFooter) {
+        openArchiveFooter.addEventListener('click', (e) => {
+          e.preventDefault();
+          showGame();
+          window.history.pushState({}, '', '?play=true');
+          openArchive();
+        });
+      }
+
+      archiveClose.addEventListener('click', () => {
+        archiveModal.classList.remove('modal-visible');
+        archiveModal.classList.add('modal-hidden');
+      });
+
+      window.markArchiveCompleted = (caseId, solved) => {
+        localStorage.setItem(`doctoraj_archive_${caseId}_played`, 'true');
+        if (solved) {
+          localStorage.setItem(`doctoraj_archive_${caseId}_solved`, 'true');
+        }
+      };
+
+      // Hook up serverless Gemini cases generation button
+      const generateBtn = document.getElementById('btn-generate-cases');
+      if (generateBtn) {
+        const keyInput = document.getElementById('gemini-api-key');
+        const loadingEl = document.getElementById('ai-loading');
+        const statusEl = document.getElementById('ai-status');
+
+        generateBtn.addEventListener('click', async () => {
+          const apiKey = keyInput ? keyInput.value.trim() : '';
+          
+          if (statusEl) {
+            statusEl.textContent = "";
+            statusEl.className = "ai-status";
+          }
+          
+          if (loadingEl) loadingEl.classList.remove('hidden');
+          generateBtn.disabled = true;
+          
+          try {
+            const response = await fetch('/api/generate-cases', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey
+              },
+              body: JSON.stringify({ apiKey })
+            });
+
+            if (!response.ok) {
+              const errData = await response.json();
+              throw new Error(errData.error || "Failed to generate cases.");
+            }
+
+            const newCases = await response.json();
+            if (!newCases || newCases.length === 0) {
+              throw new Error("No cases returned from AI.");
+            }
+            
+            let customCases = [];
+            const saved = localStorage.getItem('doctoraj_custom_cases');
+            if (saved) {
+              customCases = JSON.parse(saved);
+            }
+            
+            customCases.push(...newCases);
+            localStorage.setItem('doctoraj_custom_cases', JSON.stringify(customCases));
+            
+            if (statusEl) {
+              statusEl.textContent = "10 cases generated successfully! Reloading...";
+              statusEl.className = "ai-status success";
+            }
+            if (loadingEl) loadingEl.classList.add('hidden');
+            
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+            
+          } catch (err) {
+            console.error("AI Generation error:", err);
+            if (statusEl) {
+              statusEl.textContent = "Error: " + err.message;
+              statusEl.className = "ai-status error";
+            }
+            if (loadingEl) loadingEl.classList.add('hidden');
+            generateBtn.disabled = false;
+          }
+        });
+
+        // Autofill key if saved locally
+        const savedKey = localStorage.getItem('doctoraj_gemini_key');
+        if (savedKey && keyInput) {
+          keyInput.value = savedKey;
+        }
+      }
+
+
+    });
+  </script>
+
+  <script src="gtdx.js?v=1"></script>
+</body>
+</html>
