@@ -185,32 +185,6 @@ body {
   transform: translateY(-2px);
 }
 
-.archive-banner {
-  background-color: var(--primary-accent);
-  color: #ffffff;
-  padding: 0.5rem 1.5rem;
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  animation: slideDown 0.3s ease-out;
-}
-
-.btn-exit-archive {
-  color: #ffffff;
-  text-decoration: underline;
-  font-weight: 600;
-  font-size: 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 0.2rem 0.6rem;
-  border-radius: var(--border-radius-sm);
-  transition: var(--transition-smooth);
-}
-
-.btn-exit-archive:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
 .game-container {
   max-width: 680px;
   width: 100%;
@@ -220,11 +194,15 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .card-perspective {
   perspective: 1500px;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 460px;
 }
 
@@ -257,6 +235,8 @@ body {
   flex-direction: column;
   gap: 1rem;
   overflow-y: auto;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
 }
 
 [data-theme="nejm"] .card-face {
@@ -978,6 +958,9 @@ body {
   justify-content: center;
   gap: 1.5rem;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .carousel-arrow {
@@ -1044,12 +1027,15 @@ body {
     display: flex !important;
     justify-content: space-between;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     gap: 0.75rem;
     margin-top: 0.25rem;
   }
   .mobile-nav-row .carousel-arrow {
     display: flex !important;
-    flex: 1;
+    flex: 1 1 0;
+    width: auto;
     justify-content: center;
     align-items: center;
     border-radius: var(--border-radius-sm);
@@ -1057,19 +1043,81 @@ body {
     gap: 0.5rem;
     font-size: 0.9rem;
     font-weight: 600;
+    min-width: 0;
+    padding: 0 0.5rem;
+    white-space: nowrap;
   }
 }
 
 @media (max-width: 600px) {
+  html,
+  body,
+  .app-header,
+  .landing-view,
+  .game-view,
+  .app-footer,
+  .cookie-banner-bottom {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  .app-header *,
+  .game-view *,
+  .cookie-banner-bottom * {
+    min-width: 0;
+  }
   .logo-text { font-size: 1.4rem; }
   .pulse-icon { width: 38px; height: 20px; }
   .header-container { padding: 0.6rem 0.85rem; }
-  .game-container { margin: 0.75rem auto; gap: 0.85rem; padding: 0 0.75rem; }
+  .header-actions {
+    max-width: none;
+    overflow: visible;
+  }
+  .game-view {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .game-container {
+    width: calc(100vw - 1rem);
+    max-width: 360px;
+    min-width: 0;
+    margin: 0.5rem auto;
+    gap: 0.85rem;
+    padding: 0;
+    align-self: center;
+  }
   .card-face { padding: 1rem; }
-  .card-perspective, .card-flip-inner { min-height: 460px; }
+  .card-perspective, .card-flip-inner { min-height: 440px; }
+  .card-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+  .card-step-info {
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.25;
+  }
   .clue-item { gap: 0.75rem; padding: 0.6rem 0.75rem; }
   .clue-text { font-size: 0.88rem; }
-  .controls-panel { padding: 1rem; }
+  .controls-panel,
+  .history-panel {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    overflow-x: hidden;
+  }
+  .input-wrapper,
+  .suggestions-dropdown,
+  .guess-history-list {
+    width: 100%;
+    max-width: 100%;
+  }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
   .cookie-container { flex-direction: column; align-items: stretch; gap: 1rem; }
   .cookie-buttons { justify-content: flex-end; }
@@ -2124,8 +2172,8 @@ body {
   }
   .header-actions {
     gap: 0.4rem;
-    max-width: 116px;
-    overflow: hidden;
+    max-width: none;
+    overflow: visible;
   }
   .icon-btn {
     width: 36px;

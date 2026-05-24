@@ -186,12 +186,6 @@
 
   <!-- Game View (Game Board) -->
   <div id="game-view" class="game-view hidden">
-    <!-- Archive Indicator -->
-    <div id="archive-banner" class="archive-banner hidden">
-      <span>Currently playing in <strong>Archive Mode (Case #<span id="archive-case-num"></span>)</strong></span>
-      <a href="index.html" class="btn-exit-archive">Exit Archive</a>
-    </div>
-
     <!-- Main Game Layout -->
     <main class="game-container">
       <!-- Carousel Wrapper to hold flanking arrows and the card -->
@@ -1423,13 +1417,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('guess_one').textContent = currentCase.initialClue;
 
-      const banner = document.getElementById('archive-banner');
-      const numEl = document.getElementById('archive-case-num');
-      if (isArchive) {
-        banner.classList.remove('hidden');
-        numEl.textContent = currentCase.id;
-      }
-
       const savedTheme = localStorage.getItem('doctoraj_theme') || 'standard';
       document.documentElement.dataset.theme = savedTheme;
 
@@ -1509,6 +1496,14 @@
       const playDailyFooter = document.getElementById('footer-play-daily');
       const openArchiveFooter = document.getElementById('footer-open-archive');
 
+      const setUrl = (url) => {
+        const target = url.startsWith('?') ? `${window.location.pathname}${url}` : url;
+        const current = `${window.location.pathname}${window.location.search}`;
+        if (current !== target) {
+          window.history.pushState({}, '', url);
+        }
+      };
+
       const showGame = () => {
         if (!landingView || !gameView) return;
         landingView.classList.add('hidden');
@@ -1524,25 +1519,17 @@
         landingView.classList.remove('hidden');
       };
 
-      // Set initial view based on query parameters
-      const playParam = urlParams.get('play');
-      if (isArchive || playParam === 'true') {
-        showGame();
-      } else {
-        showLanding();
-      }
-
       if (startBtn) {
         startBtn.addEventListener('click', () => {
           showGame();
-          window.history.pushState({}, '', '?play=true');
+          setUrl('?play=true');
         });
       }
 
       if (browseBtn) {
         browseBtn.addEventListener('click', () => {
           showGame();
-          window.history.pushState({}, '', '?play=true');
+          setUrl('?play=true');
           const archiveHeaderBtn = document.getElementById('archive-btn-header');
           if (archiveHeaderBtn) archiveHeaderBtn.click();
         });
@@ -1551,7 +1538,7 @@
       if (logoArea) {
         logoArea.addEventListener('click', () => {
           showLanding();
-          window.history.pushState({}, '', window.location.pathname);
+          setUrl(window.location.pathname);
         });
       }
 
@@ -1559,7 +1546,7 @@
         playDailyFooter.addEventListener('click', (e) => {
           e.preventDefault();
           showGame();
-          window.history.pushState({}, '', '?play=true');
+          setUrl('?play=true');
         });
       }
 
@@ -1568,7 +1555,13 @@
       const archiveClose = document.getElementById('archive-close-btn');
       const archiveGrid = document.getElementById('archive-cases-grid');
 
-      const openArchive = () => {
+      const closeArchive = () => {
+        if (!archiveModal) return;
+        archiveModal.classList.remove('modal-visible');
+        archiveModal.classList.add('modal-hidden');
+      };
+
+      const openArchive = (pushHistory = true) => {
         if (!archiveGrid || !archiveModal) return;
         archiveGrid.innerHTML = ALL_CASES.map(c => {
           const isSolved = localStorage.getItem(`doctoraj_archive_${c.id}_solved`) === 'true';
@@ -1594,22 +1587,46 @@
 
         archiveModal.classList.remove('modal-hidden');
         archiveModal.classList.add('modal-visible');
+        if (pushHistory) setUrl('?play=true&archiveModal=true');
       };
 
-      if (archiveBtn) archiveBtn.addEventListener('click', openArchive);
+      if (archiveBtn) archiveBtn.addEventListener('click', () => openArchive());
       if (openArchiveFooter) {
         openArchiveFooter.addEventListener('click', (e) => {
           e.preventDefault();
           showGame();
-          window.history.pushState({}, '', '?play=true');
+          setUrl('?play=true');
           openArchive();
         });
       }
 
       if (archiveClose && archiveModal) archiveClose.addEventListener('click', () => {
-        archiveModal.classList.remove('modal-visible');
-        archiveModal.classList.add('modal-hidden');
+        closeArchive();
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('archiveModal') === 'true') {
+          window.history.back();
+        } else {
+          setUrl('?play=true');
+        }
       });
+
+      const syncViewToUrl = () => {
+        const params = new URLSearchParams(window.location.search);
+        closeArchive();
+
+        if (params.has('archive') || params.get('play') === 'true' || params.get('archiveModal') === 'true') {
+          showGame();
+        } else {
+          showLanding();
+        }
+
+        if (params.get('archiveModal') === 'true') {
+          openArchive(false);
+        }
+      };
+
+      syncViewToUrl();
+      window.addEventListener('popstate', syncViewToUrl);
 
       window.markArchiveCompleted = (caseId, solved) => {
         localStorage.setItem(`doctoraj_archive_${caseId}_played`, 'true');
