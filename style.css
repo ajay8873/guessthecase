@@ -1337,7 +1337,6 @@ body {
   color: var(--text-primary);
   border: 1px solid var(--text-primary);
 }
-}
 
 .rule-card-title {
   font-family: var(--font-family-display);
