@@ -17,6 +17,9 @@ export async function onRequestPost(context) {
                    body.apiKey || 
                    "";
 
+    const supabaseUrl = env.SUPABASE_URL || request.headers.get("x-supabase-url") || body.supabaseUrl || "";
+    const supabaseKey = env.SUPABASE_ANON_KEY || request.headers.get("x-supabase-key") || body.supabaseKey || "";
+
     if (!apiKey) {
       return new Response(
         JSON.stringify({ error: "Missing Gemini API Key. Please configure it in your Cloudflare dashboard environment variables or pass it locally." }),
@@ -27,8 +30,29 @@ export async function onRequestPost(context) {
       );
     }
 
+    let existingCasesContext = "";
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const sbResponse = await fetch(`${supabaseUrl}/rest/v1/cases?select=name`, {
+          headers: {
+            "apikey": supabaseKey,
+            "Authorization": `Bearer ${supabaseKey}`
+          }
+        });
+        if (sbResponse.ok) {
+          const cases = await sbResponse.json();
+          if (cases && cases.length > 0) {
+            const caseNames = cases.map(c => c.name).join(", ");
+            existingCasesContext = `\nCRITICAL INSTRUCTION: Do NOT generate any of the following conditions as they already exist in our database: ${caseNames}.`;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch existing cases from Supabase", e);
+      }
+    }
+
     const prompt = `Generate 10 realistic, challenging medical clinical cases for a medical education guessing game.
-Each case must have a distinct correct diagnosis. Avoid duplicating common conditions.
+Each case must have a distinct correct diagnosis. Avoid duplicating common conditions.${existingCasesContext}
 Focus on classic clinical presentations suitable for USMLE Step 1 and Step 2 preparation.
 For each case, generate:
 1. 'name': The standard correct diagnosis (e.g., 'Acute Appendicitis').
@@ -108,6 +132,36 @@ For each case, generate:
 
     const text = result.candidates[0].content.parts[0].text;
     const parsedData = JSON.parse(text);
+
+    // Save generated cases to Supabase
+    if (supabaseUrl && supabaseKey && parsedData.cases && parsedData.cases.length > 0) {
+      try {
+        // Format the cases to match snake_case schema expected by Supabase
+        const dbCases = parsedData.cases.map(c => ({
+          name: c.name,
+          synonyms: c.synonyms,
+          initial_clue: c.initialClue,
+          symptoms: c.symptoms,
+          description: c.description,
+          anki1: c.anki1,
+          anki2: c.anki2,
+          nejm_link: c.nejmLink
+        }));
+
+        await fetch(`${supabaseUrl}/rest/v1/cases`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": supabaseKey,
+            "Authorization": `Bearer ${supabaseKey}`,
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(dbCases)
+        });
+      } catch (e) {
+        console.error("Failed to save cases to Supabase", e);
+      }
+    }
 
     return new Response(JSON.stringify(parsedData.cases), {
       status: 200,

@@ -2902,5 +2902,50 @@ body {
   }
 }
 
+/* --- RESULT BANNER UI ENHANCEMENTS --- */
+.result-banner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
 
+.result-banner {
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  animation: resultBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
 
+@keyframes resultBounce {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.result-banner-win {
+  background: linear-gradient(135deg, #0f766e 0%, #10b981 100%);
+}
+
+.result-banner-loss {
+  background: linear-gradient(135deg, #f43f5e 0%, #ea580c 100%);
+}
+
+.result-banner-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.result-banner-disease {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}

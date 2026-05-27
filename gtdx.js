@@ -191,6 +191,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Statistics functions
+  window.loadStatsFromCloud = async function(userId) {
+    if (!window.supabaseClient) return;
+    try {
+      const { data, error } = await window.supabaseClient
+        .from('user_stats')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (data && !error) {
+        gameStats.gamesPlayed = data.games_played || 0;
+        gameStats.wins = data.wins || 0;
+        gameStats.currentStreak = data.current_streak || 0;
+        gameStats.longestStreak = data.longest_streak || 0;
+        gameStats.totalGuesses = data.total_guesses || 0;
+        gameStats.guessDistribution = data.guess_distribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+        gameStats.lastPlayedDate = data.last_played_date || null;
+        
+        saveStats(true); // Save to local cookie as backup, avoid cloud sync loop
+      }
+    } catch (e) {
+      console.error("Failed to load stats from cloud", e);
+    }
+  };
+
   function loadStats() {
     if (!cookiesAccepted) return;
 
@@ -211,9 +236,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function saveStats() {
+  async function saveStats(localOnly = false) {
     if (!cookiesAccepted) return;
     setCookie('doctoraj_stats', JSON.stringify(gameStats), 365);
+    
+    if (!localOnly && window.supabaseClient) {
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      if (session && session.user) {
+        try {
+          await window.supabaseClient.from('user_stats').upsert({
+            user_id: session.user.id,
+            games_played: gameStats.gamesPlayed,
+            wins: gameStats.wins,
+            current_streak: gameStats.currentStreak,
+            longest_streak: gameStats.longestStreak,
+            total_guesses: gameStats.totalGuesses,
+            guess_distribution: gameStats.guessDistribution,
+            last_played_date: gameStats.lastPlayedDate,
+            updated_at: new Date().toISOString()
+          });
+        } catch (e) {
+          console.error("Failed to sync stats to cloud", e);
+        }
+      }
+    }
   }
 
   function resetStats() {

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoctorAJ - Login</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: var(--font-family-base, 'Inter', sans-serif);
+      color: var(--text-primary);
+    }
+    .auth-container {
+      background: var(--bg-primary);
+      padding: 3rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #0f766e, #10b981);
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-logo {
+      font-family: var(--font-family-display, 'Outfit', sans-serif);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .auth-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2);
+    }
+    .btn-auth {
+      width: 100%;
+      padding: 0.9rem;
+      background: #0f766e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.1s ease;
+      margin-top: 1rem;
+    }
+    .btn-auth:hover {
+      background: #0d645c;
+    }
+    .btn-auth:active {
+      transform: scale(0.98);
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .auth-link {
+      color: #0f766e;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+    .forgot-pass {
+      text-align: right;
+      margin-top: -1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+    .error-msg {
+      color: #ef4444;
+      background: #fee2e2;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .success-msg {
+      color: #10b981;
+      background: #d1fae5;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    /* Simple Pulse effect for Logo */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .pulse-logo {
+      animation: pulse 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <svg class="pulse-logo" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        DoctorAJ
+      </div>
+      <div class="auth-subtitle" id="auth-subtitle">Sign in to start diagnosing</div>
+    </div>
+
+    <div id="auth-error" class="error-msg"></div>
+    <div id="auth-success" class="success-msg"></div>
+
+    <form id="login-form">
+      <div class="form-group" id="name-group" style="display: none;">
+        <label class="form-label" for="name">Full Name</label>
+        <input type="text" id="name" class="form-input" placeholder="Dr. John Doe">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" class="form-input" placeholder="doctor@example.com" required>
+      </div>
+      <div class="form-group" id="password-group">
+        <label class="form-label" for="password">Password</label>
+        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+      </div>
+      
+      <div class="forgot-pass" id="forgot-pass-container">
+        <a class="auth-link" id="btn-forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-auth" id="btn-submit">Sign In</button>
+    </form>
+
+    <div class="auth-footer" id="auth-footer">
+      <span id="footer-text">Don't have an account?</span> <a class="auth-link" id="btn-toggle-mode">Sign Up</a>
+    </div>
+  </div>
+
+  <script src="login.js?v=4"></script>
+</body>
+</html>
