@@ -1563,15 +1563,27 @@
         archiveKeyInput.addEventListener('input', () => syncGeminiKey(archiveKeyInput.value));
       }
 
+      const currentIdx = ALL_CASES.findIndex(c => c.id === currentCase.id);
+      const isLastCase = (currentIdx === ALL_CASES.length - 1);
+
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
           if (prevCaseId) navigateToCase(prevCaseId);
         });
       }
       if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          if (nextCaseId) navigateToCase(nextCaseId);
-        });
+        if (isLastCase) {
+          nextBtn.title = "Load More Cases (Generate via AI)";
+          nextBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+          nextBtn.addEventListener('click', () => {
+            const key = localStorage.getItem('doctoraj_gemini_key') || '';
+            window.generateAICases(key);
+          });
+        } else {
+          nextBtn.addEventListener('click', () => {
+            if (nextCaseId) navigateToCase(nextCaseId);
+          });
+        }
       }
       if (prevBtnMobile) {
         prevBtnMobile.addEventListener('click', () => {
@@ -1579,9 +1591,18 @@
         });
       }
       if (nextBtnMobile) {
-        nextBtnMobile.addEventListener('click', () => {
-          if (nextCaseId) navigateToCase(nextCaseId);
-        });
+        if (isLastCase) {
+          nextBtnMobile.innerHTML = `Load More <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px; display: inline-block; vertical-align: middle;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+          nextBtnMobile.title = "Generate more cases via Gemini AI";
+          nextBtnMobile.addEventListener('click', () => {
+            const key = localStorage.getItem('doctoraj_gemini_key') || '';
+            window.generateAICases(key);
+          });
+        } else {
+          nextBtnMobile.addEventListener('click', () => {
+            if (nextCaseId) navigateToCase(nextCaseId);
+          });
+        }
       }
 
       const rulesModal = document.getElementById('rules-modal');
@@ -1692,21 +1713,28 @@
         archiveGrid.innerHTML = ALL_CASES.map(c => {
           const isSolved = localStorage.getItem(`doctoraj_archive_${c.id}_solved`) === 'true';
           const isPlayed = localStorage.getItem(`doctoraj_archive_${c.id}_played`) === 'true';
+          const isActive = currentCase && c.id === currentCase.id;
+          
           let statusBadge = '<span class="badge badge-unplayed">Not Played</span>';
-          if (isSolved) {
+          if (isActive) {
+            statusBadge = '<span class="badge badge-active-case">Active Case</span>';
+          } else if (isSolved) {
             statusBadge = '<span class="badge badge-solved">Solved</span>';
           } else if (isPlayed) {
             statusBadge = '<span class="badge badge-failed">Failed</span>';
           }
 
+          const cardClass = isActive ? 'archive-card active-card-highlight' : 'archive-card';
+          const actionText = isActive ? 'Currently Playing' : 'Play Case &rarr;';
+
           return `
-            <div class="archive-card" onclick="window.location.href='index.html?archive=${c.id}'">
+            <div class="${cardClass}" onclick="window.location.href='index.html?archive=${c.id}'">
               <div class="archive-card-header">
                 <span class="archive-card-number">Case #${c.id}</span>
                 ${statusBadge}
               </div>
               <p class="archive-card-clue">${c.initialClue.substring(0, 100)}...</p>
-              <div class="archive-card-action">Play Case &rarr;</div>
+              <div class="archive-card-action">${actionText}</div>
             </div>
           `;
         }).join('');
@@ -1762,73 +1790,99 @@
         }
       };
 
-      // Hook up serverless Gemini cases generation button
+      // Shared serverless case generation function
+      window.generateAICases = async (apiKey = '') => {
+        const loadingEl = document.getElementById('ai-loading');
+        const statusEl = document.getElementById('ai-status');
+        const generateBtn = document.getElementById('btn-generate-cases');
+
+        if (statusEl) {
+          statusEl.textContent = "";
+          statusEl.className = "ai-status";
+        }
+
+        if (loadingEl) loadingEl.classList.remove('hidden');
+        if (generateBtn) generateBtn.disabled = true;
+
+        // Visual feedback if triggering from main screen
+        const originalNextBtnHTML = nextBtn ? nextBtn.innerHTML : '';
+        const originalNextBtnMobileHTML = nextBtnMobile ? nextBtnMobile.innerHTML : '';
+        if (nextBtn) {
+          nextBtn.disabled = true;
+          nextBtn.innerHTML = '<span class="spinner" style="width: 16px; height: 16px; margin: 0; display: inline-block; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>';
+        }
+        if (nextBtnMobile) {
+          nextBtnMobile.disabled = true;
+          nextBtnMobile.textContent = "Generating...";
+        }
+
+        try {
+          const response = await fetch('/api/generate-cases', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey
+            },
+            body: JSON.stringify({ apiKey })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error || "Failed to generate cases.");
+          }
+
+          const newCases = await response.json();
+          if (!newCases || newCases.length === 0) {
+            throw new Error("No cases returned from AI.");
+          }
+
+          let customCases = [];
+          const saved = localStorage.getItem('doctoraj_custom_cases');
+          if (saved) {
+            customCases = JSON.parse(saved);
+          }
+
+          customCases.push(...newCases);
+          localStorage.setItem('doctoraj_custom_cases', JSON.stringify(customCases));
+
+          if (statusEl) {
+            statusEl.textContent = "10 cases generated successfully! Reloading...";
+            statusEl.className = "ai-status success";
+          }
+          if (loadingEl) loadingEl.classList.add('hidden');
+
+          alert("10 new cases successfully generated and saved to the database!");
+          window.location.reload();
+
+        } catch (err) {
+          console.error("AI Generation error:", err);
+          if (statusEl) {
+            statusEl.textContent = "Error: " + err.message;
+            statusEl.className = "ai-status error";
+          } else {
+            alert("AI Generation error: " + err.message);
+          }
+          if (loadingEl) loadingEl.classList.add('hidden');
+          if (generateBtn) generateBtn.disabled = false;
+          if (nextBtn) {
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = originalNextBtnHTML;
+          }
+          if (nextBtnMobile) {
+            nextBtnMobile.disabled = false;
+            nextBtnMobile.innerHTML = originalNextBtnMobileHTML;
+          }
+        }
+      };
+
       const generateBtn = document.getElementById('btn-generate-cases');
       if (generateBtn) {
         const keyInput = document.getElementById('gemini-api-key');
-        const loadingEl = document.getElementById('ai-loading');
-        const statusEl = document.getElementById('ai-status');
-
-        generateBtn.addEventListener('click', async () => {
+        generateBtn.addEventListener('click', () => {
           const apiKey = keyInput ? keyInput.value.trim() : '';
-
-          if (statusEl) {
-            statusEl.textContent = "";
-            statusEl.className = "ai-status";
-          }
-
-          if (loadingEl) loadingEl.classList.remove('hidden');
-          generateBtn.disabled = true;
-
-          try {
-            const response = await fetch('/api/generate-cases', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey
-              },
-              body: JSON.stringify({ apiKey })
-            });
-
-            if (!response.ok) {
-              const errData = await response.json();
-              throw new Error(errData.error || "Failed to generate cases.");
-            }
-
-            const newCases = await response.json();
-            if (!newCases || newCases.length === 0) {
-              throw new Error("No cases returned from AI.");
-            }
-
-            let customCases = [];
-            const saved = localStorage.getItem('doctoraj_custom_cases');
-            if (saved) {
-              customCases = JSON.parse(saved);
-            }
-
-            customCases.push(...newCases);
-            localStorage.setItem('doctoraj_custom_cases', JSON.stringify(customCases));
-
-            if (statusEl) {
-              statusEl.textContent = "10 cases generated successfully! Reloading...";
-              statusEl.className = "ai-status success";
-            }
-            if (loadingEl) loadingEl.classList.add('hidden');
-
-            setTimeout(() => {
-              window.location.reload();
-            }, 1500);
-
-          } catch (err) {
-            console.error("AI Generation error:", err);
-            if (statusEl) {
-              statusEl.textContent = "Error: " + err.message;
-              statusEl.className = "ai-status error";
-            }
-            if (loadingEl) loadingEl.classList.add('hidden');
-            generateBtn.disabled = false;
-          }
+          window.generateAICases(apiKey);
         });
+      }
 
         // Autofill key if saved locally
         const savedKey = localStorage.getItem('doctoraj_gemini_key');

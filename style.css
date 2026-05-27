@@ -802,6 +802,13 @@ body {
 .badge-unplayed { background-color: var(--border-color); color: var(--text-secondary); }
 .badge-solved { background-color: rgba(16, 185, 129, 0.15); color: var(--color-success); }
 .badge-failed { background-color: rgba(244, 63, 94, 0.15); color: var(--color-error); }
+.badge-active-case { background-color: var(--primary-accent); color: white; }
+
+.archive-card.active-card-highlight {
+  border: 2px solid var(--primary-accent) !important;
+  background-color: var(--bg-secondary) !important;
+  box-shadow: 0 4px 15px rgba(15, 118, 110, 0.15) !important;
+}
 
 .stats-container { display: flex; flex-direction: column; gap: 1.5rem; }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center; }
