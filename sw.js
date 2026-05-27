@@ -7,9 +7,9 @@
      - Google Fonts: Stale-while-revalidate
    ========================================================================== */
 
-const CACHE_NAME = 'doctoraj-v3';
-const STATIC_CACHE_NAME = 'doctoraj-static-v3';
-const FONT_CACHE_NAME = 'doctoraj-fonts-v3';
+const CACHE_NAME = 'doctoraj-v4';
+const STATIC_CACHE_NAME = 'doctoraj-static-v4';
+const FONT_CACHE_NAME = 'doctoraj-fonts-v4';
 
 // Core app shell assets to pre-cache on install
 const APP_SHELL = [
@@ -72,8 +72,9 @@ self.addEventListener('fetch', (event) => {
             return response;
           }
           if (response.status === 200) {
+            const responseToCache = response.clone();
             caches.open(STATIC_CACHE_NAME).then((cache) => {
-              cache.put(request, response.clone());
+              cache.put(request, responseToCache);
             });
           }
           return response;
