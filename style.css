@@ -2710,3 +2710,197 @@ body {
   color: var(--color-success);
 }
 
+/* ==========================================================================
+   RESULT BANNER & AI SUMMARY ENHANCEMENTS
+   ========================================================================== */
+
+/* Entrance animations */
+@keyframes bannerBounce {
+  0% { transform: scale(0.9); opacity: 0; }
+  70% { transform: scale(1.03); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes iconPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+@keyframes buttonPulseGlow {
+  0% { border-color: var(--border-color); box-shadow: 0 0 0 0 var(--primary-light); }
+  50% { border-color: var(--primary-accent); box-shadow: 0 0 12px 2px var(--primary-light); }
+  100% { border-color: var(--border-color); box-shadow: 0 0 0 0 var(--primary-light); }
+}
+
+@keyframes shimmerEffect {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.result-banner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.result-banner {
+  position: relative;
+  border-radius: var(--border-radius-md);
+  padding: 2rem 1.5rem;
+  color: #ffffff !important;
+  text-align: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: bannerBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Background shimmer overlay */
+.result-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmerEffect 4s infinite linear;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.result-banner > * {
+  position: relative;
+  z-index: 2;
+}
+
+.result-banner-win {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #10b981 100%);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="dark"] .result-banner-win {
+  background: linear-gradient(135deg, #09061a 0%, #7084ff 50%, #0d9488 100%);
+  box-shadow: 0 10px 30px rgba(112, 132, 255, 0.3);
+}
+
+.result-banner-loss {
+  background: linear-gradient(135deg, #991b1b 0%, #f43f5e 60%, #ea580c 100%);
+  box-shadow: 0 10px 30px rgba(244, 63, 94, 0.25);
+}
+
+.result-banner-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.85rem;
+  border-radius: 50px;
+  backdrop-filter: blur(4px);
+}
+
+.result-banner-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: iconPulse 2s infinite ease-in-out;
+  margin-bottom: 0.25rem;
+}
+
+.result-banner-title {
+  font-family: var(--font-family-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.result-banner-disease {
+  font-family: var(--font-family-display);
+  font-weight: 800;
+  font-size: 1.8rem;
+  line-height: 1.25;
+  margin: 0;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.result-banner-subtitle {
+  font-family: var(--font-family-sans);
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* Pulsing AI summary card button */
+.nejm-case-card.pulse-glow {
+  animation: buttonPulseGlow 3s infinite ease-in-out;
+  border-width: 1.5px;
+  background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+  background-size: 200% 100%;
+}
+
+.nejm-case-card.pulse-glow:hover {
+  animation: none;
+  border-color: var(--primary-accent);
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.15);
+}
+
+[data-theme="dark"] .nejm-case-card.pulse-glow:hover {
+  box-shadow: 0 4px 14px rgba(112, 132, 255, 0.2);
+}
+
+/* Styling for floating circular close button in full page modals (.modal-page) */
+.modal-page .modal-close {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  z-index: 1001; /* Stay above content scrolling */
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: var(--transition-smooth);
+}
+
+.modal-page .modal-close:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-accent);
+  border-color: var(--primary-accent);
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .modal-page .modal-close {
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+  }
+}
+
+
+

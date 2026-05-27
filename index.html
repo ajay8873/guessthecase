@@ -96,6 +96,11 @@
               </svg>
               <span>Toggle Dark Mode</span>
             </button>
+            <div class="dropdown-divider" style="height: 1px; background-color: var(--border-color); margin: 0.5rem 0;"></div>
+            <div class="dropdown-input-wrapper" style="padding: 0.5rem 1rem; display: flex; flex-direction: column; gap: 0.35rem;">
+              <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.05em;">GEMINI API KEY</span>
+              <input type="password" id="settings-gemini-key" placeholder="Key for file:/// AI" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-size: 0.75rem;" />
+            </div>
           </div>
         </div>
       </div>
@@ -1493,6 +1498,29 @@
             settingsDropdown.classList.remove('show');
           }
         });
+      }
+
+      // Sync Gemini API Key inputs with localStorage
+      const settingsKeyInput = document.getElementById('settings-gemini-key');
+      const archiveKeyInput = document.getElementById('gemini-api-key');
+
+      function syncGeminiKey(keyVal) {
+        const trimmed = keyVal.trim();
+        localStorage.setItem('doctoraj_gemini_key', trimmed);
+        if (settingsKeyInput) settingsKeyInput.value = trimmed;
+        if (archiveKeyInput) archiveKeyInput.value = trimmed;
+      }
+
+      const savedKeyVal = localStorage.getItem('doctoraj_gemini_key') || '';
+      if (settingsKeyInput) {
+        settingsKeyInput.value = savedKeyVal;
+        settingsKeyInput.addEventListener('input', () => syncGeminiKey(settingsKeyInput.value));
+        // Prevent click events inside input from closing settings dropdown
+        settingsKeyInput.addEventListener('click', (e) => e.stopPropagation());
+      }
+      if (archiveKeyInput) {
+        archiveKeyInput.value = savedKeyVal;
+        archiveKeyInput.addEventListener('input', () => syncGeminiKey(archiveKeyInput.value));
       }
 
       if (prevBtn) {

@@ -176,6 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fetch percentile ranking from backend
   async function fetchPercentileRanking(guessCount, won = true) {
+    if (window.location.protocol === 'file:') {
+      return null;
+    }
     try {
       const response = await fetch(`/api/percentile/?guesses=${guessCount}&won=${won}`);
       if (!response.ok) return null;
@@ -741,119 +744,209 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  function openModal(message, shareText = null, showStats = false, guessCount = null, won = true) {
-    const nejmLink = window.NEJM_LINK;
-    if (nejmLink) {
-      message = message + `<a href="${nejmLink}" target="_blank" rel="noopener noreferrer" class="nejm-case-card">
-        <div class="nejm-case-card-left">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5b7fa6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" flex-shrink="0">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
-          </svg>
-          <div>
-            <div class="nejm-case-card-title">Read the full case on NEJM</div>
-            <div class="nejm-case-card-sub">View the original case report.</div>
-          </div>
-        </div>
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5b7fa6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-        </svg>
-      </a>`;
+  // Get explanation either from backend function or client-side Gemini direct call fallback
+  async function getClinicalExplanation(correctDiagnosis, incorrectGuesses, apiKey) {
+    let useClientSide = (window.location.protocol === 'file:');
+    
+    if (!useClientSide) {
+      try {
+        const response = await fetch('/api/explain-guesses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+          },
+          body: JSON.stringify({
+            correctDiagnosis,
+            incorrectGuesses,
+            apiKey
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          return data.explanation;
+        } else {
+          const errData = await response.json();
+          console.warn("Backend explain-guesses failed:", errData.error);
+        }
+      } catch (err) {
+        console.warn("Backend explain-guesses fetch exception, falling back client-side:", err);
+      }
+      useClientSide = true;
     }
 
-    let modalContent = message;
+    if (useClientSide) {
+      if (!apiKey) {
+        throw new Error("Missing Gemini API Key. Please click the settings gear icon and configure a Gemini API Key to enable offline AI summary.");
+      }
+      
+      const actualWrongGuesses = incorrectGuesses.filter(g => g && g.toLowerCase() !== 'skipped');
+      let prompt = "";
+      if (actualWrongGuesses.length === 0) {
+        prompt = `You are an elite clinical medicine educator.
+A medical student playing a diagnosis guessing game correctly identified today's case as **${correctDiagnosis}**.
+Since they correctly identified the diagnosis without making wrong guesses, provide a brief, high-yield clinical review and study summary of **${correctDiagnosis}**.
+Include:
+1. **Key Presentation**: Classic signs, symptoms, and risk factors.
+2. **Diagnostics**: Gold-standard diagnostic tests, key labs, or pathognomonic findings.
+3. **First-line Management**: Basic therapeutics and key educational points for board exams.
+
+Use a concise, educational, and bulleted format suitable for USMLE Step 1 and Step 2 clinical review.
+Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <li>, and <strong> tags). Do not return markdown block quotes or full page HTML.`;
+      } else {
+        prompt = `You are an elite clinical medicine educator.
+A medical student playing a diagnosis guessing game correctly identified today's case as **${correctDiagnosis}**.
+However, during their attempts, they made the following incorrect diagnoses:
+${actualWrongGuesses.map((g, i) => `${i + 1}. ${g}`).join('\n')}
+
+Briefly explain why each incorrect guess is wrong and how it clinically differentiates from the correct diagnosis (**${correctDiagnosis}**).
+Use a concise, educational, and bulleted format suitable for high-yield USMLE Step 1 and Step 2 clinical review.
+Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <li>, and <strong> tags). Do not return markdown block quotes or full page HTML.`;
+      }
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [{
+          parts: [{ text: prompt }]
+        }]
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error?.message || "Failed to contact Gemini API directly.");
+      }
+
+      const result = await response.json();
+      if (!result.candidates || !result.candidates[0] || !result.candidates[0].content || !result.candidates[0].content.parts || !result.candidates[0].content.parts[0].text) {
+        throw new Error("Invalid response format from Gemini API direct call.");
+      }
+
+      return result.candidates[0].content.parts[0].text;
+    }
+  }
+
+  function openModal(message, shareText = null, showStats = false, guessCount = null, won = true) {
+    const actualWrongGuesses = guessHistory
+      .filter(g => g.result === 'wrong' && g.name && g.name.toLowerCase() !== 'skipped')
+      .map(g => g.name);
+
+    const buttonText = actualWrongGuesses.length > 0 
+      ? 'Summarize my guesses' 
+      : 'Clinical AI Summary';
+      
+    const subtitleText = actualWrongGuesses.length > 0
+      ? 'Generate a clinical AI analysis of your diagnostic path.'
+      : 'Generate a clinical overview and diagnostic highlights.';
+
+    // Create the "Summarize my guesses" button styled as nejm-case-card
+    const summarizeBtnHTML = `
+      <div id="btn-summarize-guesses" class="nejm-case-card pulse-glow" style="cursor: pointer; margin-top: 1.25rem;">
+        <div class="nejm-case-card-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+          <div>
+            <div class="nejm-case-card-title">${buttonText}</div>
+            <div class="nejm-case-card-sub">${subtitleText}</div>
+          </div>
+        </div>
+        <div id="summarize-chevron">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6"></path>
+          </svg>
+        </div>
+      </div>
+      <div id="ai-explain-result" style="margin-top: 1rem;"></div>
+    `;
+
+    let modalContent = `
+      <div class="result-banner-container">
+        ${message}
+        ${summarizeBtnHTML}
+        <div id="percentile-box-placeholder"></div>
+      </div>
+    `;
 
     if (showStats) {
       const stats = formatStatsDisplay();
       // Highlight the guess count if it's a win
       const highlightGuess = won ? guessCount : null;
-      modalContent = `<div style="text-align: center;">${message}</div>${createStatsDisplay(stats, highlightGuess)}`;
+      modalContent += createStatsDisplay(stats, highlightGuess);
     } else if (isArchiveMode) {
       // For archive games, add custom message below diagnosis
       const archiveNumber = doctoraj;
       let archiveMessage = '';
       if (won) {
-        archiveMessage = `<div style="margin-top: 1rem; padding: 0.75rem; background-color: #e6f3ff; border-radius: 8px; border: 2px solid #2196F3;">
+        archiveMessage = `<div style="margin-top: 1rem; padding: 0.75rem; background-color: rgba(33, 150, 243, 0.1); border-radius: var(--border-radius-sm); border: 2.5px solid var(--primary-accent); color: var(--text-primary); text-align: center;">
           <strong>You got DoctorAJ #${archiveNumber} in ${guessCount} ${guessCount === 1 ? 'guess' : 'guesses'}!</strong>
         </div>`;
       } else {
-        archiveMessage = `<div style="margin-top: 1rem; padding: 0.75rem; background-color: #fff3e0; border-radius: 8px; border: 2px solid #ff9800;">
+        archiveMessage = `<div style="margin-top: 1rem; padding: 0.75rem; background-color: rgba(245, 158, 11, 0.1); border-radius: var(--border-radius-sm); border: 2.5px solid var(--color-warning); color: var(--text-primary); text-align: center;">
           <strong>Better luck next time!</strong>
         </div>`;
       }
-      modalContent = `<div style="text-align: center; width: 100%;">${message}${archiveMessage}</div>`;
-    } else {
-      // For other games without stats, ensure full width
-      modalContent = `<div style="text-align: center; width: 100%;">${message}</div>`;
+      modalContent += archiveMessage;
     }
 
     modalMessage.innerHTML = modalContent;
     modalCopyMsg.style.display = "none";
 
-    // Add Explain My Guesses with AI section (always show it for case review!)
-    const actualWrongGuesses = guessHistory
-      .filter(g => g.result === 'wrong' && g.name && g.name.toLowerCase() !== 'skipped')
-      .map(g => g.name);
-
-    const explainSection = document.createElement('div');
-    explainSection.id = 'ai-explain-section';
-    
-    const buttonText = actualWrongGuesses.length > 0 
-      ? '🧠 Explain My Guesses with AI' 
-      : '🧠 Learn More: Clinical AI Summary';
-
-    explainSection.innerHTML = `
-      <div class="ai-explain-btn-container" id="ai-explain-btn-container">
-        <button id="btn-explain-ai" class="btn-explain-ai">${buttonText}</button>
-      </div>
-      <div id="ai-explain-result"></div>
-    `;
-    modalMessage.appendChild(explainSection);
-
-    const explainBtn = document.getElementById('btn-explain-ai');
+    const summarizeBtn = document.getElementById('btn-summarize-guesses');
+    const summarizeChevron = document.getElementById('summarize-chevron');
     const explainResult = document.getElementById('ai-explain-result');
-    const explainBtnContainer = document.getElementById('ai-explain-btn-container');
 
-    explainBtn.addEventListener('click', async () => {
-      explainBtn.disabled = true;
-      explainBtn.innerHTML = `<span class="spinner" style="display: inline-block; vertical-align: middle; margin-right: 8px;"></span> Contacting Gemini AI...`;
-      
-      try {
-        const correctDisease = diseases.find(d => d.id == doctoraj);
-        const correctDiagnosis = correctDisease ? correctDisease.name : 'Unknown';
-        const savedKey = localStorage.getItem('doctoraj_gemini_key') || '';
-
-        const response = await fetch('/api/explain-guesses', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': savedKey
-          },
-          body: JSON.stringify({
-            correctDiagnosis,
-            incorrectGuesses: actualWrongGuesses,
-            apiKey: savedKey
-          })
-        });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || "Failed to explain guesses.");
+    if (summarizeBtn) {
+      summarizeBtn.addEventListener('click', async () => {
+        // Disable further clicks
+        summarizeBtn.style.pointerEvents = 'none';
+        
+        // Show loading spinner in place of the chevron
+        if (summarizeChevron) {
+          summarizeChevron.innerHTML = `<span class="spinner" style="display: inline-block; vertical-align: middle;"></span>`;
         }
 
-        const data = await response.json();
-        explainBtnContainer.style.display = 'none';
-        explainResult.innerHTML = `
-          <div class="ai-explain-box">
-            <div class="ai-explain-title">🧠 Clinical AI Analysis</div>
-            <div class="ai-explain-content">${data.explanation}</div>
-          </div>
-        `;
-      } catch (err) {
-        console.error("AI Explanation error:", err);
-        explainBtn.disabled = false;
-        explainBtn.innerHTML = `❌ Error: ${err.message}. Try Again.`;
-      }
-    });
+        try {
+          const correctDisease = diseases.find(d => d.id == doctoraj);
+          const correctDiagnosis = correctDisease ? correctDisease.name : 'Unknown';
+          const savedKey = localStorage.getItem('doctoraj_gemini_key') || '';
+
+          const explanation = await getClinicalExplanation(correctDiagnosis, actualWrongGuesses, savedKey);
+          
+          // Hide the button card and render the beautiful AI explain box
+          summarizeBtn.style.display = 'none';
+          if (explainResult) {
+            explainResult.innerHTML = `
+              <div class="ai-explain-box" style="margin-top: 0;">
+                <div class="ai-explain-title">🧠 Clinical AI Analysis</div>
+                <div class="ai-explain-content">${explanation}</div>
+              </div>
+            `;
+          }
+        } catch (err) {
+          console.error("AI Explanation error:", err);
+          summarizeBtn.style.pointerEvents = 'auto';
+          if (summarizeChevron) {
+            summarizeChevron.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6"></path>
+              </svg>
+            `;
+          }
+          alert("AI Explanation error: " + err.message);
+        }
+      });
+    }
 
     // Only show share button if not in archive mode
     // console.log(`[DEBUG openModal] shareText: ${shareText}, isArchiveMode: ${isArchiveMode}, showButton: ${shareText && !isArchiveMode}`);
@@ -882,6 +975,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show modal immediately
     modal.classList.add("modal-visible");
     modal.classList.remove("modal-hidden");
+    try {
+      history.pushState({ modalId: 'result-modal' }, '');
+    } catch (e) {
+      console.warn("Could not push state to history:", e);
+    }
 
     // Add percentile ranking asynchronously after modal is shown
     if (showStats && guessCount) {
@@ -891,18 +989,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
           if (percentileData.tier === "not in top 50%") {
             message = "You were not in the top 50% of players today, better luck tomorrow!";
-            bgColor = "#fff3e0";
-            borderColor = "#ff9800";
+            bgColor = "rgba(245, 158, 11, 0.1)";
+            borderColor = "var(--color-warning)";
           } else {
             message = `🧠 You were in the ${percentileData.tier} of players today!`;
-            bgColor = "#e6f3ff";
+            bgColor = "rgba(33, 150, 243, 0.1)";
             borderColor = "#2196F3";
           }
 
-          const percentileDiv = `<div style="margin-top: 1rem; padding: 0.75rem; background-color: ${bgColor}; border-radius: 8px; border: 2px solid ${borderColor};">
-            <strong>${message}</strong>
-          </div>`;
-          modalMessage.innerHTML += percentileDiv;
+          const placeholder = document.getElementById('percentile-box-placeholder');
+          if (placeholder) {
+            placeholder.innerHTML = `
+              <div style="margin-top: 1rem; padding: 0.75rem; background-color: ${bgColor}; border-radius: var(--border-radius-sm); border: 2px solid ${borderColor}; color: var(--text-primary); text-align: center;">
+                <strong>${message}</strong>
+              </div>
+            `;
+          }
         }
       });
     }
@@ -911,6 +1013,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeModal() {
     modal.classList.remove("modal-visible");
     modal.classList.add("modal-hidden");
+    try {
+      if (history.state && history.state.modalId === 'result-modal') {
+        history.back();
+      }
+    } catch (e) {
+      console.warn("Could not navigate back in history:", e);
+    }
   }
 
   modalCloseBtn.onclick = closeModal;
@@ -943,14 +1052,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const shareText = isArchiveMode ? null : generateShareText(isWon, guessCount);
 
       if (isWon) {
-        const winMessage = `<div style="padding: 0.75rem; background-color: #e6f3ff; border-radius: 8px; border: 2px solid #2196F3; margin-bottom: 1rem;">
-          <strong>🎉 Correct! The diagnosis was ${diseaseName}.</strong>
+        const winMessage = `<div class="result-banner result-banner-win">
+          <div class="result-banner-badge">🎉 Diagnosis Correct</div>
+          <div class="result-banner-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h3 class="result-banner-title">Case Resolved</h3>
+          <h2 class="result-banner-disease">${diseaseName}</h2>
+          <p class="result-banner-subtitle">You solved it in ${guessCount} ${guessCount === 1 ? 'attempt' : 'attempts'}!</p>
         </div>`;
         const showPercentiles = !isArchiveMode;
         openModal(winMessage, shareText, showPercentiles, guessCount, true);
       } else {
-        const lossMessage = `<div style="padding: 0.75rem; background-color: #fff3e0; border-radius: 8px; border: 2px solid #ff9800; margin-bottom: 1rem;">
-          <strong>❌ Game Over! The diagnosis was ${diseaseName}.</strong>
+        const lossMessage = `<div class="result-banner result-banner-loss">
+          <div class="result-banner-badge">❌ Diagnosis Unresolved</div>
+          <div class="result-banner-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+          <h3 class="result-banner-title">Today's Case Completed</h3>
+          <h2 class="result-banner-disease">${diseaseName}</h2>
+          <p class="result-banner-subtitle">Better luck next time!</p>
         </div>`;
         const showPercentiles = !isArchiveMode;
         openModal(lossMessage, shareText, showPercentiles, guessCount, false);
@@ -1181,9 +1307,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const correctDisease = diseases.find(d => d.id == doctoraj);
       const diseaseName = correctDisease ? correctDisease.name : "unknown";
-      const winMessage = `<div style="padding: 0.75rem; background-color: #e6f3ff; border-radius: 8px; border: 2px solid #2196F3; margin-bottom: 1rem;">
-      <strong>🎉 Correct! The diagnosis was ${diseaseName}.</strong>
-    </div>`;
+      const winMessage = `<div class="result-banner result-banner-win">
+        <div class="result-banner-badge">🎉 Diagnosis Correct</div>
+        <div class="result-banner-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h3 class="result-banner-title">Case Resolved</h3>
+        <h2 class="result-banner-disease">${diseaseName}</h2>
+        <p class="result-banner-subtitle">You solved it in ${tries} ${tries === 1 ? 'attempt' : 'attempts'}!</p>
+      </div>`;
       // Only show stats for daily games, not archives
       const showStats = !isArchiveMode;
       openModal(winMessage, shareText, showStats, tries, true);
@@ -1221,9 +1355,18 @@ document.addEventListener('DOMContentLoaded', () => {
         disableGameInput();
         showSummaryButton();
 
-        const lossMessage = `<div style="padding: 0.75rem; background-color: #fff3e0; border-radius: 8px; border: 2px solid #ff9800; margin-bottom: 1rem;">
-        <strong>❌ Game Over! The diagnosis was ${name}.</strong>
-      </div>`;
+        const lossMessage = `<div class="result-banner result-banner-loss">
+          <div class="result-banner-badge">❌ Diagnosis Unresolved</div>
+          <div class="result-banner-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+          <h3 class="result-banner-title">Today's Case Completed</h3>
+          <h2 class="result-banner-disease">${name}</h2>
+          <p class="result-banner-subtitle">Better luck next time!</p>
+        </div>`;
         // Only show stats for daily games, not archives
         const showStats = !isArchiveMode;
         openModal(lossMessage, shareText, showStats, tries, false);
@@ -1361,30 +1504,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const correctDiagnosis = correctDisease ? correctDisease.name : 'Unknown';
         const savedKey = localStorage.getItem('doctoraj_gemini_key') || '';
 
-        const response = await fetch('/api/explain-guesses', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': savedKey
-          },
-          body: JSON.stringify({
-            correctDiagnosis,
-            incorrectGuesses: actualWrongGuesses,
-            apiKey: savedKey
-          })
-        });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || "Failed to explain guesses.");
-        }
-
-        const data = await response.json();
+        const explanation = await getClinicalExplanation(correctDiagnosis, actualWrongGuesses, savedKey);
+        
         inlineAiBtn.style.display = 'none';
         inlineAiResult.innerHTML = `
           <div class="ai-explain-box" style="padding: 1rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
             <div class="ai-explain-title" style="font-weight: bold; margin-bottom: 0.5rem; color: #0f766e;">🧠 Clinical AI Analysis</div>
-            <div class="ai-explain-content" style="font-size: 0.95rem; line-height: 1.5; color: #334155;">${data.explanation}</div>
+            <div class="ai-explain-content" style="font-size: 0.95rem; line-height: 1.5; color: #334155;">${explanation}</div>
           </div>
         `;
       } catch (err) {
@@ -1394,6 +1520,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Handle popstate/back button events to close result modal
+  window.addEventListener('popstate', (e) => {
+    if (modal.classList.contains("modal-visible")) {
+      modal.classList.remove("modal-visible");
+      modal.classList.add("modal-hidden");
+    }
+  });
 
   // Initialize the cookie system
   initializeCookieSystem();
