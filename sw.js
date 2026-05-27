@@ -7,9 +7,9 @@
      - Google Fonts: Stale-while-revalidate
    ========================================================================== */
 
-const CACHE_NAME = 'doctoraj-v2';
-const STATIC_CACHE_NAME = 'doctoraj-static-v2';
-const FONT_CACHE_NAME = 'doctoraj-fonts-v2';
+const CACHE_NAME = 'doctoraj-v3';
+const STATIC_CACHE_NAME = 'doctoraj-static-v3';
+const FONT_CACHE_NAME = 'doctoraj-fonts-v3';
 
 // Core app shell assets to pre-cache on install
 const APP_SHELL = [
@@ -58,6 +58,39 @@ self.addEventListener('fetch', (event) => {
   // Never cache API / Cloudflare Function calls — always network
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/functions/')) {
     return; // Fall through to network naturally
+  }
+
+  // For navigation requests (loading HTML pages), use network-first with cache fallback.
+  // This avoids service worker network errors when Cloudflare performs redirects (e.g. login.html -> login).
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          // If the network request was redirected, return it directly without caching it
+          // to prevent "redirected response was used for a request whose redirect mode is not 'follow'" exception.
+          if (response.redirected) {
+            return response;
+          }
+          if (response.status === 200) {
+            caches.open(STATIC_CACHE_NAME).then((cache) => {
+              cache.put(request, response.clone());
+            });
+          }
+          return response;
+        })
+        .catch(async () => {
+          const cache = await caches.open(STATIC_CACHE_NAME);
+          const cached = await cache.match(request);
+          if (cached) return cached;
+          
+          // Fallback to cached login.html or index.html if offline
+          if (url.pathname.includes('login')) {
+            return cache.match('login.html');
+          }
+          return cache.match('index.html') || new Response('Offline', { status: 503 });
+        })
+    );
+    return;
   }
 
   // Google Fonts: stale-while-revalidate
