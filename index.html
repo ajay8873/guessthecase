@@ -18,6 +18,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css?v=1">
 </head>
 
@@ -36,39 +37,67 @@
       </div>
 
       <div class="header-actions">
-        <!-- PWA Install Button (hidden until browser fires beforeinstallprompt) -->
-        <button id="pwa-install-btn" class="icon-btn pwa-install-btn" title="Install App" aria-label="Install App"
-          style="display:none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-        </button>
-        <button id="archive-btn-header" class="icon-btn" title="Case Archive" aria-label="Case Archive">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-            <path d="m3.3 7 8.7 5 8.7-5" />
-            <path d="M12 22V12" />
-          </svg>
-        </button>
-        <button id="stats-button" class="icon-btn" title="Statistics" aria-label="Statistics">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10" />
-            <line x1="12" y1="20" x2="12" y2="4" />
-            <line x1="6" y1="20" x2="6" y2="14" />
-          </svg>
-        </button>
-        <button id="theme-toggle-btn" class="icon-btn" title="Toggle NEJM Style" aria-label="Toggle NEJM Style">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        </button>
+        <!-- Settings Gear Dropdown -->
+        <div class="settings-menu-container">
+          <button id="settings-toggle-btn" class="icon-btn" title="Settings" aria-label="Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+          
+          <div id="settings-dropdown" class="settings-dropdown">
+            <!-- PWA Install Button (hidden until browser fires beforeinstallprompt) -->
+            <button id="pwa-install-btn" class="dropdown-item pwa-install-btn" title="Install App" aria-label="Install App" style="display:none;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span>Install App</span>
+            </button>
+            
+            <button id="archive-btn-header" class="dropdown-item" title="Case Archive" aria-label="Case Archive">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                <path d="m3.3 7 8.7 5 8.7-5" />
+                <path d="M12 22V12" />
+              </svg>
+              <span>Case Archive</span>
+            </button>
+            
+            <button id="stats-button" class="dropdown-item" title="Statistics" aria-label="Statistics">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+              <span>Statistics</span>
+            </button>
+            
+            <button id="rules-btn" class="dropdown-item" title="How to Play" aria-label="How to Play">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <span>How to Play</span>
+            </button>
+            
+            <button id="theme-toggle-btn" class="dropdown-item" title="Toggle Dark Theme" aria-label="Toggle Dark Theme">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              <span>Toggle Dark Mode</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -92,6 +121,16 @@
         <div class="hero-actions" aria-label="Landing actions">
           <button id="btn-start-diagnosing" class="btn_color hero-cta-btn">Start Diagnosing &rarr;</button>
           <button id="btn-browse-archive" class="btn_secondary hero-secondary-btn">Browse Archive</button>
+        </div>
+
+        <!-- Progress Loss Warning Box -->
+        <div class="progress-warning-box">
+          <svg class="warning-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span><strong>Progress Warning:</strong> Switching devices or clearing your browser cookies/local storage will result in loss of your daily progress, streaks, and guess history statistics.</span>
         </div>
 
         <div class="hero-metrics" aria-label="DoctorAJ highlights">
@@ -160,8 +199,7 @@
               <span class="rule-step-number">02</span>
             </div>
             <h4 class="rule-card-title">Search or Skip</h4>
-            <p class="rule-card-desc">Type and select a diagnosis from our comprehensive medical database. Hit submit
-              blank to skip and reveal clues.</p>
+            <p class="rule-card-desc">Type and select a diagnosis <strong>from the dropdown list</strong>. Click submit with an empty search box to skip and reveal the next clue.</p>
           </div>
           <div class="landing-rule-card">
             <div class="rule-card-icon-wrapper">
@@ -393,7 +431,7 @@
   <!-- Modals Section -->
 
   <!-- 1. Results & Stats Modal -->
-  <div id="result-modal" class="modal modal-hidden">
+  <div id="result-modal" class="modal-page modal-hidden">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
       <button id="modal-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
@@ -431,31 +469,29 @@
         <ul class="rules-list">
           <li>
             <div class="rules-step-num">1</div>
-            <div>You start with an <strong>Initial Presentation</strong> clue summarizing the patient's symptoms.</div>
+            <div>You start with the <strong>Initial Presentation</strong> outlining the patient's demographics, history, and chief complaint.</div>
           </li>
           <li>
             <div class="rules-step-num">2</div>
-            <div>Search and select a disease from the autocomplete search box, then click <strong>Submit</strong>.</div>
+            <div>To make a guess, type in the search box and **you MUST select a diagnosis from the dropdown list of suggestions**. (Guesses not selected from the dropdown won't submit).</div>
           </li>
           <li>
             <div class="rules-step-num">3</div>
-            <div>If your guess is incorrect (or if you click <strong>Submit with an empty box to skip</strong>), a new
-              clue is unlocked: physical findings, diagnostic tests, or pathology.</div>
+            <div>Click <strong>Submit</strong> to test your diagnosis. To reveal the next clue without guessing, **leave the search box blank and click Submit to skip the turn**.</div>
           </li>
           <li>
             <div class="rules-step-num">4</div>
-            <div>Correctly identify the disease to win! Once finished, read the full case summary and copy Anki
-              flashcard tags to your study decks.</div>
+            <div>Reveal up to 6 clues. Correctly identify the disease to win, read the full clinical review, and sync study tags straight to Anki!</div>
           </li>
         </ul>
       </div>
 
-      <button id="rules-start-btn" class="btn_color full-width">Got it, Let's Play!</button>
+      <button id="rules-start-btn" class="btn_color full-width">I Understand</button>
     </div>
   </div>
 
   <!-- 3. Archive Selection Modal -->
-  <div id="archive-modal" class="modal modal-hidden">
+  <div id="archive-modal" class="modal-page modal-hidden">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
       <button id="archive-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
@@ -1424,7 +1460,7 @@
       if (themeBtn) {
         themeBtn.addEventListener('click', () => {
           const currentTheme = document.documentElement.dataset.theme;
-          const newTheme = currentTheme === 'nejm' ? 'standard' : 'nejm';
+          const newTheme = currentTheme === 'dark' ? 'standard' : 'dark';
           document.documentElement.dataset.theme = newTheme;
           localStorage.setItem('doctoraj_theme', newTheme);
           window.location.reload();
@@ -1443,6 +1479,21 @@
         params.set('play', 'true');
         window.location.href = 'index.html?' + params.toString();
       };
+
+      // Settings dropdown toggle
+      const settingsToggleBtn = document.getElementById('settings-toggle-btn');
+      const settingsDropdown = document.getElementById('settings-dropdown');
+      if (settingsToggleBtn && settingsDropdown) {
+        settingsToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          settingsDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', (e) => {
+          if (!settingsToggleBtn.contains(e.target) && !settingsDropdown.contains(e.target)) {
+            settingsDropdown.classList.remove('show');
+          }
+        });
+      }
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
@@ -1470,6 +1521,8 @@
       const rulesClose = document.getElementById('rules-close-btn');
       const rulesStart = document.getElementById('rules-start-btn');
 
+      let isStartingGame = false;
+
       const openRules = () => {
         if (!rulesModal) return;
         rulesModal.classList.remove('modal-hidden');
@@ -1481,6 +1534,11 @@
         rulesModal.classList.remove('modal-visible');
         rulesModal.classList.add('modal-hidden');
         localStorage.setItem('doctoraj_rules_seen', 'true');
+        if (isStartingGame) {
+          showGame();
+          setUrl('?play=true');
+          isStartingGame = false;
+        }
       };
 
       if (rulesBtn) rulesBtn.addEventListener('click', openRules);
@@ -1521,8 +1579,8 @@
 
       if (startBtn) {
         startBtn.addEventListener('click', () => {
-          showGame();
-          setUrl('?play=true');
+          isStartingGame = true;
+          openRules();
         });
       }
 
@@ -1734,13 +1792,6 @@
         location.hostname === 'localhost' ||
         location.hostname === '127.0.0.1';
 
-      if (supportsPwaProtocol) {
-        const manifestLink = document.createElement('link');
-        manifestLink.rel = 'manifest';
-        manifestLink.href = 'manifest.json';
-        document.head.appendChild(manifestLink);
-      }
-
       if (isRunningStandalone) {
         console.log('[PWA] Running as installed app — skipping prompts.');
       }
@@ -1782,6 +1833,9 @@
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredInstallPrompt = e;
+        
+        // If beforeinstallprompt fires, the app is not currently installed
+        localStorage.removeItem(KEY_INSTALLED);
 
         if (installBtn) {
           installBtn.style.display = 'flex';
@@ -1789,7 +1843,7 @@
           setTimeout(() => installBtn.classList.remove('pwa-install-pulse'), 2000);
         }
 
-        if (!isPwaInstalled() && !isSnoozed()) {
+        if (!isSnoozed()) {
           setTimeout(() => showInstallPopup('android'), 1200);
         }
       });

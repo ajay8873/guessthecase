@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Check if this is an archive game
   const isArchiveMode = document.getElementById('doctoraj-data').dataset.archive === 'true';
-  const caseType = document.documentElement.dataset.theme === 'nejm' ? 'nejm' : 'standard';
+  const caseType = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'standard';
 
   let guessNumber = 0;
   let puzzleStartTime = null;
@@ -405,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function acceptCookies() {
     cookiesAccepted = true;
     setCookie('doctoraj_cookies_accepted', 'true', 365); // Valid for 1 year
+    localStorage.setItem('doctoraj_cookies_accepted', 'true');
     localStorage.setItem('doctoraj_ga_consent', 'granted');
     if (typeof gtag !== 'undefined') {
       gtag('consent', 'update', { analytics_storage: 'granted' });
@@ -416,13 +417,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function declineCookies() {
     cookiesAccepted = false;
     localStorage.setItem('doctoraj_ga_consent', 'denied');
+    localStorage.setItem('doctoraj_cookies_accepted', 'false');
     hideCookieNotification();
     showGameDisabledOverlay();
     disableGameInput();
   }
 
   function checkCookieConsent() {
-    const consent = getCookie('doctoraj_cookies_accepted');
+    const consent = getCookie('doctoraj_cookies_accepted') || localStorage.getItem('doctoraj_cookies_accepted');
     if (consent === 'true') {
       cookiesAccepted = true;
       if (!localStorage.getItem('doctoraj_ga_consent')) {

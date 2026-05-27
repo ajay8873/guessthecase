@@ -13,11 +13,11 @@ const FONT_CACHE_NAME = 'doctoraj-fonts-v1';
 
 // Core app shell assets to pre-cache on install
 const APP_SHELL = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/gtdx.js',
-  '/manifest.json'
+  './',
+  'index.html',
+  'style.css',
+  'gtdx.js',
+  'manifest.json'
 ];
 
 // ── Install: Pre-cache the app shell ────────────────────────────────────────
@@ -65,7 +65,7 @@ self.addEventListener('fetch', (event) => {
 
   // App shell (HTML, CSS, JS, manifest): Cache-first, update in background
   if (
-    url.pathname === '/' ||
+    url.pathname.endsWith('/') ||
     url.pathname.endsWith('.html') ||
     url.pathname.endsWith('.css') ||
     url.pathname.endsWith('.js') ||
