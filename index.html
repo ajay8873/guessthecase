@@ -2075,9 +2075,12 @@
         const generateBtn = document.getElementById('btn-generate-cases');
 
         let finalSubject = targetSubject;
-        if (!finalSubject) {
+        if (!finalSubject || finalSubject === 'all') {
           const genSelect = document.getElementById('generate-subject-select');
           finalSubject = genSelect ? genSelect.value : 'General Medicine';
+        }
+        if (finalSubject === 'all') {
+          finalSubject = 'General Medicine';
         }
 
         if (statusEl) {
