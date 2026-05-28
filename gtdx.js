@@ -649,6 +649,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById("guess");
     const submitBtn = document.getElementById('submit-btn');
     const suggestions = document.getElementById('suggestions');
+    const revealClueBtn = document.getElementById('btn-reveal-clue');
+    const revealClueBtnMobile = document.getElementById('btn-reveal-clue-mobile');
 
     if (input) {
       if (gameCompleted) {
@@ -667,6 +669,18 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.style.opacity = "0.6";
       submitBtn.style.cursor = "not-allowed";
     }
+    if (revealClueBtn) {
+      revealClueBtn.disabled = true;
+      revealClueBtn.textContent = gameCompleted ? "Complete" : "Locked";
+      revealClueBtn.style.opacity = "0.6";
+      revealClueBtn.style.cursor = "not-allowed";
+    }
+    if (revealClueBtnMobile) {
+      revealClueBtnMobile.disabled = true;
+      revealClueBtnMobile.textContent = gameCompleted ? "Complete" : "Locked";
+      revealClueBtnMobile.style.opacity = "0.6";
+      revealClueBtnMobile.style.cursor = "not-allowed";
+    }
     if (suggestions) {
       suggestions.style.display = 'none';
     }
@@ -675,6 +689,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function enableGameInput() {
     const input = document.getElementById("guess");
     const submitBtn = document.getElementById('submit-btn');
+    const revealClueBtn = document.getElementById('btn-reveal-clue');
+    const revealClueBtnMobile = document.getElementById('btn-reveal-clue-mobile');
 
     if (input && !gameCompleted) {
       input.disabled = false;
@@ -685,6 +701,18 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.textContent = "Submit";
       submitBtn.style.opacity = "1";
       submitBtn.style.cursor = "pointer";
+    }
+    if (revealClueBtn && !gameCompleted) {
+      revealClueBtn.disabled = false;
+      revealClueBtn.textContent = "Reveal Clue";
+      revealClueBtn.style.opacity = "1";
+      revealClueBtn.style.cursor = "pointer";
+    }
+    if (revealClueBtnMobile && !gameCompleted) {
+      revealClueBtnMobile.disabled = false;
+      revealClueBtnMobile.textContent = "🔍 Reveal Clue";
+      revealClueBtnMobile.style.opacity = "1";
+      revealClueBtnMobile.style.cursor = "pointer";
     }
   }
 
@@ -1529,6 +1557,24 @@ Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <l
       guessing();
     }
   });
+
+  // Add Reveal Clue buttons event listeners
+  const revealClueBtn = document.getElementById('btn-reveal-clue');
+  const revealClueBtnMobile = document.getElementById('btn-reveal-clue-mobile');
+
+  function triggerRevealClue() {
+    if (gameCompleted || !cookiesAccepted) return;
+    input.value = "";
+    selectedDiseaseId = null;
+    guessing();
+  }
+
+  if (revealClueBtn) {
+    revealClueBtn.addEventListener('click', triggerRevealClue);
+  }
+  if (revealClueBtnMobile) {
+    revealClueBtnMobile.addEventListener('click', triggerRevealClue);
+  }
 
   // ==========================================
   // INLINE AI SUMMARY BUTTON LOGIC

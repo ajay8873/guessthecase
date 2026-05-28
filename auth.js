@@ -28,24 +28,41 @@ supabaseClient.auth.getSession().then(({ data: { session } }) => {
     // Fetch all cases from the database
     supabaseClient.from('cases').select('*').then(({ data: cases, error }) => {
       if (!error && cases && cases.length > 0 && window.ALL_CASES) {
+        // Sort cases stably by created_at (ascending) or id as fallback to ensure IDs are consistent on all devices
+        cases.sort((a, b) => {
+          const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          if (timeA !== timeB) return timeA - timeB;
+          const idA = a.id ? String(a.id) : '';
+          const idB = b.id ? String(b.id) : '';
+          return idA.localeCompare(idB);
+        });
+
+        const dbCasesList = [];
         cases.forEach((c, idx) => {
+          const caseObj = {
+            id: 1000 + idx, // Virtual integer ID to support routing
+            dbId: c.id,     // Actual Supabase UUID
+            name: c.name,
+            synonyms: c.synonyms,
+            initialClue: c.initial_clue,
+            symptoms: c.symptoms,
+            description: c.description,
+            anki1: c.anki1,
+            anki2: c.anki2,
+            nejmLink: c.nejm_link
+          };
+          dbCasesList.push(caseObj);
+
           // Check if this case name is already in ALL_CASES to avoid duplicates
           const exists = window.ALL_CASES.some(existing => existing.name.toLowerCase() === c.name.toLowerCase());
           if (!exists) {
-            window.ALL_CASES.push({
-              id: 1000 + idx, // Virtual integer ID to support routing
-              dbId: c.id,     // Actual Supabase UUID
-              name: c.name,
-              synonyms: c.synonyms,
-              initialClue: c.initial_clue,
-              symptoms: c.symptoms,
-              description: c.description,
-              anki1: c.anki1,
-              anki2: c.anki2,
-              nejmLink: c.nejm_link
-            });
+            window.ALL_CASES.push(caseObj);
           }
         });
+
+        // Cache database cases to local storage for synchronous loading on next page load
+        localStorage.setItem('doctoraj_db_cases', JSON.stringify(dbCasesList));
         
         // If the archive modal is open, refresh the view
         const archiveModal = document.getElementById('archive-modal');

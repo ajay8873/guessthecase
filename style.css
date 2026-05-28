@@ -588,6 +588,25 @@ body {
 .btn-summary { background-color: #0284c7; }
 .btn-summary:hover { background-color: #0369a1; }
 
+.btn-reveal {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.btn-reveal:hover:not(:disabled) {
+  background-color: var(--primary-light);
+  color: var(--primary-accent);
+  border-color: var(--primary-accent);
+}
+.btn-reveal:disabled {
+  background-color: var(--bg-primary);
+  color: var(--text-light);
+  border-color: var(--border-color);
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .skip-helper-text {
   font-size: 0.8rem;
   color: var(--text-light);
