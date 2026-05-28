@@ -1155,7 +1155,9 @@ body {
 
 
 .landing-view.hidden,
-.game-view.hidden {
+.game-view.hidden,
+.subject-select-view.hidden,
+.ai-loading.hidden {
   display: none !important;
 }
 
