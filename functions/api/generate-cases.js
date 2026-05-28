@@ -19,6 +19,7 @@ export async function onRequestPost(context) {
 
     const supabaseUrl = env.SUPABASE_URL || request.headers.get("x-supabase-url") || body.supabaseUrl || "";
     const supabaseKey = env.SUPABASE_ANON_KEY || request.headers.get("x-supabase-key") || body.supabaseKey || "";
+    const subject = body.subject || "General Medicine";
 
     if (!apiKey) {
       return new Response(
@@ -52,6 +53,7 @@ export async function onRequestPost(context) {
     }
 
     const prompt = `Generate 10 realistic, challenging medical clinical cases for a medical education guessing game.
+All 10 cases MUST belong to the medical specialty (subject): ${subject}.
 Each case must have a distinct correct diagnosis. Avoid duplicating common conditions.${existingCasesContext}
 Focus on classic clinical presentations suitable for USMLE Step 1 and Step 2 preparation.
 For each case, generate:
@@ -67,7 +69,8 @@ For each case, generate:
 5. 'description': A detailed clinical summary of the condition, its pathophysiology, and classic treatment.
 6. 'anki1': Anki tag format (e.g., 'Medical::Surgery::Appendicitis').
 7. 'anki2': Step 2 tag format (e.g., 'Step2::Surgery::GI').
-8. 'nejmLink': A Google search query link for the case report (e.g., 'https://www.google.com/search?q=NEJM+case+report+Acute+Appendicitis').`;
+8. 'nejmLink': A Google search query link for the case report (e.g., 'https://www.google.com/search?q=NEJM+case+report+Acute+Appendicitis').
+9. 'subject': The exact string "${subject}".`;
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
@@ -92,9 +95,10 @@ For each case, generate:
               description: { type: "STRING" },
               anki1: { type: "STRING" },
               anki2: { type: "STRING" },
-              nejmLink: { type: "STRING" }
+              nejmLink: { type: "STRING" },
+              subject: { type: "STRING" }
             },
-            required: ["name", "synonyms", "initialClue", "symptoms", "description", "anki1", "anki2", "nejmLink"]
+            required: ["name", "synonyms", "initialClue", "symptoms", "description", "anki1", "anki2", "nejmLink", "subject"]
           }
         }
       },
@@ -145,7 +149,8 @@ For each case, generate:
           description: c.description,
           anki1: c.anki1,
           anki2: c.anki2,
-          nejm_link: c.nejmLink
+          nejm_link: c.nejmLink,
+          subject: c.subject || subject
         }));
 
         await fetch(`${supabaseUrl}/rest/v1/cases`, {

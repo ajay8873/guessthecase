@@ -50,7 +50,8 @@ supabaseClient.auth.getSession().then(({ data: { session } }) => {
             description: c.description,
             anki1: c.anki1,
             anki2: c.anki2,
-            nejmLink: c.nejm_link
+            nejmLink: c.nejm_link,
+            subject: c.subject || 'Miscellaneous'
           };
           dbCasesList.push(caseObj);
 

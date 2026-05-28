@@ -284,7 +284,101 @@
           </div>
         </div>
       </div>
-    </section>
+  <!-- Subject Selection View -->
+  <div id="subject-select-view" class="subject-select-view hidden">
+    <div class="subject-select-container">
+      <div class="subject-header">
+        <button id="subject-back-btn" class="subject-back-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back
+        </button>
+        <h2 class="subject-title">Practice by Specialty</h2>
+        <p class="subject-subtitle">Choose a clinical specialty to practice focused diagnostic cases, or choose all subjects to play them mixed together.</p>
+      </div>
+
+      <div class="subject-grid">
+        <div class="subject-card" data-subject="General Medicine">
+          <div class="subject-card-icon">🩺</div>
+          <div class="subject-card-info">
+            <h3>General Medicine</h3>
+            <p>Internal medicine, systemic pathologies, and chronic diseases.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Pediatrics">
+          <div class="subject-card-icon">👶</div>
+          <div class="subject-card-info">
+            <h3>Pediatrics</h3>
+            <p>Neonatology, developmental milestones, and pediatric care.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Obstetrics & Gynecology (OB/GYN)">
+          <div class="subject-card-icon">🤰</div>
+          <div class="subject-card-info">
+            <h3>OB / GYN</h3>
+            <p>Pregnancy, prenatal care, labor, and gynecological disorders.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Surgery">
+          <div class="subject-card-icon">🔪</div>
+          <div class="subject-card-info">
+            <h3>Surgery</h3>
+            <p>Acute abdomen, trauma, surgical pathology, and post-op care.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Psychiatry">
+          <div class="subject-card-icon">🧠</div>
+          <div class="subject-card-info">
+            <h3>Psychiatry</h3>
+            <p>Mood disorders, psychosis, psychopharmacology, and cognitive disorders.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Emergency Medicine">
+          <div class="subject-card-icon">🚨</div>
+          <div class="subject-card-info">
+            <h3>Emergency Medicine</h3>
+            <p>Resuscitation, acute trauma, toxicology, and triage reasoning.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Orthopedics">
+          <div class="subject-card-icon">🦴</div>
+          <div class="subject-card-info">
+            <h3>Orthopedics</h3>
+            <p>Bone fractures, joint dislocations, and musculoskeletal injuries.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="ENT">
+          <div class="subject-card-icon">👂</div>
+          <div class="subject-card-info">
+            <h3>ENT (Otolaryngology)</h3>
+            <p>Ear, nose, throat diseases, sinuses, and airway management.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Ophthalmology">
+          <div class="subject-card-icon">👁️</div>
+          <div class="subject-card-info">
+            <h3>Ophthalmology</h3>
+            <p>Ocular disorders, retina, cornea, vision changes, and emergencies.</p>
+          </div>
+        </div>
+        <div class="subject-card" data-subject="Miscellaneous">
+          <div class="subject-card-icon">🗂️</div>
+          <div class="subject-card-info">
+            <h3>Miscellaneous</h3>
+            <p>Rare diseases, system-wide pathologies, and uncategorized cases.</p>
+          </div>
+        </div>
+        <div class="subject-card subject-card-all" data-subject="all">
+          <div class="subject-card-icon">🌟</div>
+          <div class="subject-card-info">
+            <h3>All Subjects</h3>
+            <p>Mix cases from all subjects and specialties together.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Game View (Game Board) -->
@@ -571,8 +665,25 @@
       <button id="archive-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
       <h2 class="modal-title">Clinical Case Archive</h2>
       <div class="modal-divider"></div>
-      <p class="archive-intro">Test your clinical acumen on past cases. Progress in archive mode is not saved to daily
-        statistics.</p>
+      <p class="archive-intro">Test your clinical acumen on past cases. Progress in archive mode is not saved to daily statistics.</p>
+
+      <!-- Archive Subject Filter -->
+      <div class="archive-filter-row">
+        <label for="archive-subject-filter" class="filter-label">Filter by Specialty:</label>
+        <select id="archive-subject-filter" class="archive-subject-filter">
+          <option value="all">All Specialties</option>
+          <option value="General Medicine">General Medicine</option>
+          <option value="Pediatrics">Pediatrics</option>
+          <option value="Obstetrics & Gynecology (OB/GYN)">Obstetrics & Gynecology (OB/GYN)</option>
+          <option value="Surgery">Surgery</option>
+          <option value="Psychiatry">Psychiatry</option>
+          <option value="Emergency Medicine">Emergency Medicine</option>
+          <option value="Orthopedics">Orthopedics</option>
+          <option value="ENT">ENT</option>
+          <option value="Ophthalmology">Ophthalmology</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+      </div>
 
       <div id="archive-cases-grid" class="archive-cases-grid">
         <!-- Populated dynamically by initializer -->
@@ -581,10 +692,20 @@
       <!-- AI Case Generator Panel -->
       <div class="archive-ai-section">
         <h3>Infinite Cases (Gemini AI)</h3>
-        <p class="ai-desc">Generate 10 new clinical scenarios dynamically using the Gemini API. Custom cases are saved
-          locally in your browser. This will securely use the server-side environment variables or your custom key if
-          provided.</p>
-        <div class="ai-input-group">
+        <p class="ai-desc">Generate 10 new clinical scenarios dynamically using the Gemini API. Custom cases are saved locally in your browser. This will securely use the server-side environment variables or your custom key if provided.</p>
+        <div class="ai-input-group flex-wrap">
+          <select id="generate-subject-select" class="generate-subject-select">
+            <option value="General Medicine">General Medicine</option>
+            <option value="Pediatrics">Pediatrics</option>
+            <option value="Obstetrics & Gynecology (OB/GYN)">Obstetrics & Gynecology (OB/GYN)</option>
+            <option value="Surgery">Surgery</option>
+            <option value="Psychiatry">Psychiatry</option>
+            <option value="Emergency Medicine">Emergency Medicine</option>
+            <option value="Orthopedics">Orthopedics</option>
+            <option value="ENT">ENT</option>
+            <option value="Ophthalmology">Ophthalmology</option>
+            <option value="Miscellaneous">Miscellaneous</option>
+          </select>
           <input type="password" id="gemini-api-key" placeholder="Custom Gemini API Key (Optional)" />
           <button id="btn-generate-cases" class="btn_color btn-generate">Generate 10 Cases</button>
         </div>
@@ -1172,6 +1293,39 @@
     }
 
     const urlParams = new URLSearchParams(window.location.search);
+    const chosenSubject = urlParams.get('subject') || 'all';
+    window.chosenSubject = chosenSubject;
+
+    // Helper to get case subject safely (defaulting built-in cases to 'Miscellaneous')
+    const getCaseSubject = (c) => (c.subject || 'Miscellaneous').toLowerCase();
+
+    // Construct the playlist of playable cases for the chosen subject
+    let playlist = ALL_CASES;
+    if (chosenSubject !== 'all') {
+      playlist = ALL_CASES.filter(c => getCaseSubject(c) === chosenSubject.toLowerCase());
+    }
+
+    // If playlist is empty, define a placeholder case informing the user to click "Load More"
+    if (playlist.length === 0) {
+      playlist = [{
+        id: -1,
+        name: "No Cases Found",
+        synonyms: ["No Cases", "Empty Subject"],
+        initialClue: `No cases have been generated for ${chosenSubject} yet. Click the "Load More" button to generate 10 case scenarios for this specialty!`,
+        symptoms: [
+          `Specialty selected: ${chosenSubject}`,
+          "There are currently 0 cases in the database for this subject.",
+          "Click the 'Load More' button to call Gemini AI and generate new clinical cases.",
+          "The generated cases will automatically be tagged with this specialty.",
+          "You can then start diagnosing and playing cases specifically for this specialty."
+        ],
+        description: `This is a temporary placeholder. Generative AI will create 10 realistic clinical cases for ${chosenSubject} once you click "Load More Cases".`,
+        anki1: "N/A",
+        anki2: "N/A",
+        nejmLink: "https://www.nejm.org/medical-articles/general"
+      }];
+    }
+
     const archiveId = urlParams.get('archive');
     let isArchive = false;
     let currentCase = null;
@@ -1226,18 +1380,18 @@
       const startDate = new Date('2025-07-16T00:00:00-05:00');
       const now = new Date();
       const daysSinceStart = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-      const todayIndex = daysSinceStart % ALL_CASES.length;
+      const todayIndex = daysSinceStart % playlist.length;
 
-      let selectedCase = ALL_CASES[todayIndex];
+      let selectedCase = playlist[todayIndex];
       const isCaseSolved = (caseId) => {
         return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
           localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
       };
 
       if (isCaseSolved(selectedCase.id)) {
-        for (let i = 1; i < ALL_CASES.length; i++) {
-          const nextIndex = (todayIndex + i) % ALL_CASES.length;
-          const candidate = ALL_CASES[nextIndex];
+        for (let i = 1; i < playlist.length; i++) {
+          const nextIndex = (todayIndex + i) % playlist.length;
+          const candidate = playlist[nextIndex];
           if (!isCaseSolved(candidate.id)) {
             selectedCase = candidate;
             break;
@@ -1253,36 +1407,44 @@
     doctordleData.setAttribute('data-synonyms', JSON.stringify(currentCase.synonyms || []));
     window.NEJM_LINK = currentCase.nejmLink;
 
-    // Compute adjacent case IDs for navigation (skipping solved cases)
+    // Compute adjacent case IDs for navigation (skipping solved cases) within current playlist
     let prevCaseId = null;
     let nextCaseId = null;
-    if (currentCase) {
+    if (currentCase && currentCase.id !== -1) {
       const isCaseSolved = (caseId) => {
         return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
           localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
       };
 
-      const currentIdx = ALL_CASES.findIndex(c => c.id === currentCase.id);
+      const currentIdx = playlist.findIndex(c => c.id === currentCase.id);
       if (currentIdx !== -1) {
-        // Find next unsolved case
-        let nextIdx = (currentIdx + 1) % ALL_CASES.length;
-        while (nextIdx !== currentIdx) {
-          if (!isCaseSolved(ALL_CASES[nextIdx].id)) {
+        // Find next unsolved case in playlist
+        let nextIdx = (currentIdx + 1) % playlist.length;
+        let loopCount = 0;
+        while (nextIdx !== currentIdx && loopCount < playlist.length) {
+          if (!isCaseSolved(playlist[nextIdx].id)) {
             break;
           }
-          nextIdx = (nextIdx + 1) % ALL_CASES.length;
+          nextIdx = (nextIdx + 1) % playlist.length;
+          loopCount++;
         }
-        nextCaseId = ALL_CASES[nextIdx].id;
+        if (!isCaseSolved(playlist[nextIdx].id)) {
+          nextCaseId = playlist[nextIdx].id;
+        }
 
-        // Find prev unsolved case
-        let prevIdx = (currentIdx - 1 + ALL_CASES.length) % ALL_CASES.length;
-        while (prevIdx !== currentIdx) {
-          if (!isCaseSolved(ALL_CASES[prevIdx].id)) {
+        // Find prev unsolved case in playlist
+        let prevIdx = (currentIdx - 1 + playlist.length) % playlist.length;
+        loopCount = 0;
+        while (prevIdx !== currentIdx && loopCount < playlist.length) {
+          if (!isCaseSolved(playlist[prevIdx].id)) {
             break;
           }
-          prevIdx = (prevIdx - 1 + ALL_CASES.length) % ALL_CASES.length;
+          prevIdx = (prevIdx - 1 + playlist.length) % playlist.length;
+          loopCount++;
         }
-        prevCaseId = ALL_CASES[prevIdx].id;
+        if (!isCaseSolved(playlist[prevIdx].id)) {
+          prevCaseId = playlist[prevIdx].id;
+        }
       }
     }
 
@@ -1615,10 +1777,10 @@
         return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
           localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
       };
-      const allCasesSolved = ALL_CASES.every(c => isCaseSolved(c.id));
-      const currentIdx = ALL_CASES.findIndex(c => c.id === currentCase.id);
-      const isLastCase = (currentIdx === ALL_CASES.length - 1);
-      const showLoadMore = isLastCase || allCasesSolved;
+      const allCasesSolved = playlist.every(c => isCaseSolved(c.id));
+      const currentIdx = playlist.findIndex(c => c.id === currentCase.id);
+      const isLastCase = (currentIdx === playlist.length - 1);
+      const showLoadMore = (currentCase.id === -1) || isLastCase || allCasesSolved;
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
@@ -1631,7 +1793,7 @@
           nextBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
           nextBtn.addEventListener('click', () => {
             const key = localStorage.getItem('doctoraj_gemini_key') || '';
-            window.generateAICases(key);
+            window.generateAICases(key, chosenSubject);
           });
         } else {
           nextBtn.addEventListener('click', () => {
@@ -1650,7 +1812,7 @@
           nextBtnMobile.title = "Generate more cases via Gemini AI";
           nextBtnMobile.addEventListener('click', () => {
             const key = localStorage.getItem('doctoraj_gemini_key') || '';
-            window.generateAICases(key);
+            window.generateAICases(key, chosenSubject);
           });
         } else {
           nextBtnMobile.addEventListener('click', () => {
@@ -1665,6 +1827,7 @@
       const rulesStart = document.getElementById('rules-start-btn');
 
       let isStartingGame = false;
+      let chosenSubjectTemp = null;
 
       const openRules = () => {
         if (!rulesModal) return;
@@ -1678,8 +1841,8 @@
         rulesModal.classList.add('modal-hidden');
         localStorage.setItem('doctoraj_rules_seen', 'true');
         if (isStartingGame) {
-          showGame();
-          setUrl('?play=true');
+          const subject = chosenSubjectTemp || 'all';
+          window.location.href = `index.html?subject=${encodeURIComponent(subject)}&play=true`;
           isStartingGame = false;
         }
       };
@@ -1688,9 +1851,10 @@
       if (rulesClose) rulesClose.addEventListener('click', closeRules);
       if (rulesStart) rulesStart.addEventListener('click', closeRules);
 
-      // Landing View & Game View Transitions
+      // Landing View & Game View & Subject Selection View Transitions
       const landingView = document.getElementById('landing-view');
       const gameView = document.getElementById('game-view');
+      const subjectSelectView = document.getElementById('subject-select-view');
       const startBtn = document.getElementById('btn-start-diagnosing');
       const browseBtn = document.getElementById('btn-browse-archive');
       const logoArea = document.querySelector('.logo-area');
@@ -1706,8 +1870,9 @@
       };
 
       const showGame = () => {
-        if (!landingView || !gameView) return;
+        if (!landingView || !gameView || !subjectSelectView) return;
         landingView.classList.add('hidden');
+        subjectSelectView.classList.add('hidden');
         gameView.classList.remove('hidden');
         if (window.showCompletedModal) {
           window.showCompletedModal();
@@ -1715,17 +1880,48 @@
       };
 
       const showLanding = () => {
-        if (!landingView || !gameView) return;
+        if (!landingView || !gameView || !subjectSelectView) return;
         gameView.classList.add('hidden');
+        subjectSelectView.classList.add('hidden');
         landingView.classList.remove('hidden');
+      };
+
+      const showSubjectSelect = () => {
+        if (!landingView || !gameView || !subjectSelectView) return;
+        landingView.classList.add('hidden');
+        gameView.classList.add('hidden');
+        subjectSelectView.classList.remove('hidden');
+        setUrl('?select_subject=true');
       };
 
       if (startBtn) {
         startBtn.addEventListener('click', () => {
-          isStartingGame = true;
-          openRules();
+          showSubjectSelect();
         });
       }
+
+      const subjectBackBtn = document.getElementById('subject-back-btn');
+      if (subjectBackBtn) {
+        subjectBackBtn.addEventListener('click', () => {
+          showLanding();
+          setUrl(window.location.pathname);
+        });
+      }
+
+      const subjectCards = document.querySelectorAll('.subject-card');
+      subjectCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const subject = card.getAttribute('data-subject');
+          const rulesSeen = localStorage.getItem('doctoraj_rules_seen') === 'true';
+          if (!rulesSeen) {
+            isStartingGame = true;
+            chosenSubjectTemp = subject;
+            openRules();
+          } else {
+            window.location.href = `index.html?subject=${encodeURIComponent(subject)}&play=true`;
+          }
+        });
+      });
 
       if (browseBtn) {
         browseBtn.addEventListener('click', () => {
@@ -1755,6 +1951,13 @@
       const archiveBtn = document.getElementById('archive-btn-header');
       const archiveClose = document.getElementById('archive-close-btn');
       const archiveGrid = document.getElementById('archive-cases-grid');
+      const archiveFilter = document.getElementById('archive-subject-filter');
+
+      if (archiveFilter) {
+        archiveFilter.addEventListener('change', () => {
+          openArchive(false);
+        });
+      }
 
       const closeArchive = () => {
         if (!archiveModal) return;
@@ -1764,38 +1967,53 @@
 
       const openArchive = (pushHistory = true) => {
         if (!archiveGrid || !archiveModal) return;
-        archiveGrid.innerHTML = ALL_CASES.map(c => {
-          const isSolved = localStorage.getItem(`doctoraj_archive_${c.id}_solved`) === 'true';
-          const isPlayed = localStorage.getItem(`doctoraj_archive_${c.id}_played`) === 'true';
-          const isActive = currentCase && c.id === currentCase.id;
 
-          let statusBadge = '<span class="badge badge-unplayed">Not Played</span>';
-          if (isActive) {
-            statusBadge = '<span class="badge badge-active-case">Active Case</span>';
-          } else if (isSolved) {
-            statusBadge = '<span class="badge badge-solved">Solved</span>';
-          } else if (isPlayed) {
-            statusBadge = '<span class="badge badge-failed">Failed</span>';
-          }
+        const selectedFilter = archiveFilter ? archiveFilter.value : 'all';
+        let filteredCases = ALL_CASES;
+        if (selectedFilter !== 'all') {
+          filteredCases = ALL_CASES.filter(c => (c.subject || 'Miscellaneous').toLowerCase() === selectedFilter.toLowerCase());
+        }
 
-          const cardClass = isActive ? 'archive-card active-card-highlight' : 'archive-card';
-          const actionText = isActive ? 'Currently Playing' : 'Play Case &rarr;';
+        if (filteredCases.length === 0) {
+          archiveGrid.innerHTML = `<div class="no-cases-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">No cases found for this specialty. Click "Generate 10 Cases" below to create some!</div>`;
+        } else {
+          archiveGrid.innerHTML = filteredCases.map(c => {
+            const isSolved = localStorage.getItem(`doctoraj_archive_${c.id}_solved`) === 'true';
+            const isPlayed = localStorage.getItem(`doctoraj_archive_${c.id}_played`) === 'true';
+            const isActive = currentCase && c.id === currentCase.id;
 
-          return `
-            <div class="${cardClass}" onclick="window.location.href='index.html?archive=${c.id}'">
-              <div class="archive-card-header">
-                <span class="archive-card-number">Case #${c.id}</span>
-                ${statusBadge}
+            let statusBadge = '<span class="badge badge-unplayed">Not Played</span>';
+            if (isActive) {
+              statusBadge = '<span class="badge badge-active-case">Active Case</span>';
+            } else if (isSolved) {
+              statusBadge = '<span class="badge badge-solved">Solved</span>';
+            } else if (isPlayed) {
+              statusBadge = '<span class="badge badge-failed">Failed</span>';
+            }
+
+            const cardClass = isActive ? 'archive-card active-card-highlight' : 'archive-card';
+            const actionText = isActive ? 'Currently Playing' : 'Play Case &rarr;';
+            const subjectLabel = c.subject ? `<span class="archive-card-subject">${c.subject}</span>` : '<span class="archive-card-subject">Miscellaneous</span>';
+
+            return `
+              <div class="${cardClass}" onclick="window.location.href='index.html?archive=${c.id}${chosenSubject && chosenSubject !== 'all' ? '&subject=' + encodeURIComponent(chosenSubject) : ''}'">
+                <div class="archive-card-header">
+                  <span class="archive-card-number">Case #${c.id}</span>
+                  ${statusBadge}
+                </div>
+                <p class="archive-card-clue">${c.initialClue.substring(0, 100)}...</p>
+                <div class="archive-card-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 0.8rem;">
+                  ${subjectLabel}
+                  <div class="archive-card-action">${actionText}</div>
+                </div>
               </div>
-              <p class="archive-card-clue">${c.initialClue.substring(0, 100)}...</p>
-              <div class="archive-card-action">${actionText}</div>
-            </div>
-          `;
-        }).join('');
+            `;
+          }).join('');
+        }
 
         archiveModal.classList.remove('modal-hidden');
         archiveModal.classList.add('modal-visible');
-        if (pushHistory) setUrl('?play=true&archiveModal=true');
+        if (pushHistory) setUrl('?play=true&archiveModal=true' + (chosenSubject && chosenSubject !== 'all' ? '&subject=' + encodeURIComponent(chosenSubject) : ''));
       };
       window.openArchive = openArchive;
 
@@ -1815,7 +2033,7 @@
         if (params.get('archiveModal') === 'true') {
           window.history.back();
         } else {
-          setUrl('?play=true');
+          setUrl('?play=true' + (chosenSubject && chosenSubject !== 'all' ? '&subject=' + encodeURIComponent(chosenSubject) : ''));
         }
       });
 
@@ -1823,7 +2041,13 @@
         const params = new URLSearchParams(window.location.search);
         closeArchive();
 
-        if (params.has('archive') || params.get('play') === 'true' || params.get('archiveModal') === 'true') {
+        if (params.get('select_subject') === 'true') {
+          if (landingView && gameView && subjectSelectView) {
+            landingView.classList.add('hidden');
+            gameView.classList.add('hidden');
+            subjectSelectView.classList.remove('hidden');
+          }
+        } else if (params.has('archive') || params.get('play') === 'true' || params.get('archiveModal') === 'true') {
           showGame();
         } else {
           showLanding();
@@ -1845,10 +2069,16 @@
       };
 
       // Shared serverless case generation function
-      window.generateAICases = async (apiKey = '') => {
+      window.generateAICases = async (apiKey = '', targetSubject = '') => {
         const loadingEl = document.getElementById('ai-loading');
         const statusEl = document.getElementById('ai-status');
         const generateBtn = document.getElementById('btn-generate-cases');
+
+        let finalSubject = targetSubject;
+        if (!finalSubject) {
+          const genSelect = document.getElementById('generate-subject-select');
+          finalSubject = genSelect ? genSelect.value : 'General Medicine';
+        }
 
         if (statusEl) {
           statusEl.textContent = "";
@@ -1877,7 +2107,7 @@
               'Content-Type': 'application/json',
               'x-api-key': apiKey
             },
-            body: JSON.stringify({ apiKey })
+            body: JSON.stringify({ apiKey, subject: finalSubject })
           });
 
           if (!response.ok) {
@@ -1905,8 +2135,8 @@
           }
           if (loadingEl) loadingEl.classList.add('hidden');
 
-          alert("10 new cases successfully generated and saved to the database!");
-          window.location.reload();
+          alert(`10 new cases for ${finalSubject} successfully generated and saved to the database!`);
+          window.location.href = `index.html?subject=${encodeURIComponent(finalSubject)}&play=true`;
 
         } catch (err) {
           console.error("AI Generation error:", err);

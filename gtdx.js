@@ -692,6 +692,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealClueBtn = document.getElementById('btn-reveal-clue');
     const revealClueBtnMobile = document.getElementById('btn-reveal-clue-mobile');
 
+    if (doctoraj == -1) {
+      if (input) {
+        input.disabled = true;
+        input.placeholder = "No cases available. Click Load More.";
+      }
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Locked";
+        submitBtn.style.opacity = "0.6";
+        submitBtn.style.cursor = "not-allowed";
+      }
+      if (revealClueBtn) {
+        revealClueBtn.disabled = true;
+        revealClueBtn.textContent = "Locked";
+        revealClueBtn.style.opacity = "0.6";
+        revealClueBtn.style.cursor = "not-allowed";
+      }
+      if (revealClueBtnMobile) {
+        revealClueBtnMobile.disabled = true;
+        revealClueBtnMobile.textContent = "Locked";
+        revealClueBtnMobile.style.opacity = "0.6";
+        revealClueBtnMobile.style.cursor = "not-allowed";
+      }
+      return;
+    }
+
     if (input && !gameCompleted) {
       input.disabled = false;
       input.placeholder = "Diagnosis...";
@@ -710,7 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (revealClueBtnMobile && !gameCompleted) {
       revealClueBtnMobile.disabled = false;
-      revealClueBtnMobile.textContent = "🔍 Reveal Clue";
+      revealClueBtnMobile.textContent = "Reveal Clue";
       revealClueBtnMobile.style.opacity = "1";
       revealClueBtnMobile.style.cursor = "pointer";
     }
