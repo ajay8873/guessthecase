@@ -1513,6 +1513,14 @@ Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <l
   const input = document.getElementById('guess');
   const suggestions = document.getElementById('suggestions');
 
+  // Position the fixed-position dropdown to align with the input field
+  function positionSuggestions() {
+    const rect = input.getBoundingClientRect();
+    suggestions.style.top = (rect.bottom + 4) + 'px';
+    suggestions.style.left = rect.left + 'px';
+    suggestions.style.width = rect.width + 'px';
+  }
+
   // Set up input handlers (they'll be disabled if cookies not accepted)
   input.addEventListener('input', function () {
     if (!cookiesAccepted || gameCompleted) return;
@@ -1568,6 +1576,7 @@ Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <l
       suggestions.appendChild(div);
     });
 
+    positionSuggestions();
     suggestions.style.display = 'block';
   });
 
@@ -1576,6 +1585,14 @@ Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <l
       suggestions.style.display = 'none';
     }
   });
+
+  // Keep dropdown aligned on scroll or resize
+  window.addEventListener('scroll', () => {
+    if (suggestions.style.display !== 'none') positionSuggestions();
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (suggestions.style.display !== 'none') positionSuggestions();
+  }, { passive: true });
 
   // Add Enter key support for guessing
   input.addEventListener('keypress', function (e) {

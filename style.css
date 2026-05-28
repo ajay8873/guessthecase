@@ -471,6 +471,8 @@ body {
 }
 
 .controls-panel {
+  position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -525,17 +527,14 @@ body {
 }
 
 .suggestions-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
+  position: fixed;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-lg);
   max-height: 200px;
   overflow-y: auto;
-  z-index: 50;
+  z-index: 9999;
   animation: fadeIn 0.15s ease-out;
 }
 
@@ -1079,7 +1078,12 @@ body {
   }
   .clue-item { gap: 0.75rem; padding: 0.6rem 0.75rem; }
   .clue-text { font-size: 0.88rem; }
-  .controls-panel,
+  .controls-panel {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    overflow: visible;
+  }
   .history-panel {
     width: 100%;
     max-width: 100%;
@@ -1087,7 +1091,6 @@ body {
     overflow-x: hidden;
   }
   .input-wrapper,
-  .suggestions-dropdown,
   .guess-history-list {
     width: 100%;
     max-width: 100%;
