@@ -1609,8 +1609,14 @@
         archiveKeyInput.addEventListener('input', () => syncGeminiKey(archiveKeyInput.value));
       }
 
+      const isCaseSolved = (caseId) => {
+        return localStorage.getItem(`doctoraj_archive_${caseId}_solved`) === 'true' ||
+          localStorage.getItem(`doctoraj_archive_${caseId}_played`) === 'true';
+      };
+      const allCasesSolved = ALL_CASES.every(c => isCaseSolved(c.id));
       const currentIdx = ALL_CASES.findIndex(c => c.id === currentCase.id);
       const isLastCase = (currentIdx === ALL_CASES.length - 1);
+      const showLoadMore = isLastCase || allCasesSolved;
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
@@ -1618,7 +1624,7 @@
         });
       }
       if (nextBtn) {
-        if (isLastCase) {
+        if (showLoadMore) {
           nextBtn.title = "Load More Cases (Generate via AI)";
           nextBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
           nextBtn.addEventListener('click', () => {
@@ -1637,7 +1643,7 @@
         });
       }
       if (nextBtnMobile) {
-        if (isLastCase) {
+        if (showLoadMore) {
           nextBtnMobile.innerHTML = `Load More <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px; display: inline-block; vertical-align: middle;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
           nextBtnMobile.title = "Generate more cases via Gemini AI";
           nextBtnMobile.addEventListener('click', () => {
