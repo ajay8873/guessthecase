@@ -1,4 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function runWhenReady(fn) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fn);
+  } else {
+    fn();
+  }
+})(function () {
   const diseases = JSON.parse(document.getElementById('disease-data').textContent);
   const doctoraj = document.getElementById('doctoraj-data').dataset.id;
   const symptoms = JSON.parse(document.getElementById('symptom-data').textContent);
