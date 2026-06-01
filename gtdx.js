@@ -868,12 +868,20 @@ document.addEventListener('DOMContentLoaded', () => {
           return data.explanation;
         } else {
           const errData = await response.json();
-          console.warn("Backend explain-guesses failed:", errData.error);
+          // If backend returned a real API error (not a network issue), don't silently
+          // fall back to client-side — surface the error unless the user has a local key
+          if (!apiKey) {
+            throw new Error(errData.error || "AI explanation failed. Please configure a Gemini API Key in settings.");
+          }
+          console.warn("Backend explain-guesses failed, falling back client-side:", errData.error);
+          useClientSide = true;
         }
       } catch (err) {
+        // Only fall back to client-side on network/fetch exceptions, not on thrown errors above
+        if (err.message && err.message.includes("AI explanation failed")) throw err;
         console.warn("Backend explain-guesses fetch exception, falling back client-side:", err);
+        useClientSide = true;
       }
-      useClientSide = true;
     }
 
     if (useClientSide) {

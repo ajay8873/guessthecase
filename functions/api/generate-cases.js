@@ -72,7 +72,12 @@ For each case, generate:
 8. 'nejmLink': A Google search query link for the case report (e.g., 'https://www.google.com/search?q=NEJM+case+report+Acute+Appendicitis').
 9. 'subject': The exact string "${subject}".`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // Fallback model list in order of preference
+    const models = [
+      "gemini-2.5-flash",
+      "gemini-1.5-flash",
+      "gemini-1.5-pro"
+    ];
 
     const schema = {
       type: "OBJECT",
@@ -115,20 +120,35 @@ For each case, generate:
       }
     };
 
-    const apiResponse = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    let apiResponse = null;
+    let result = null;
+    let lastError = null;
 
-    if (!apiResponse.ok) {
+    for (const model of models) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      apiResponse = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (apiResponse.ok) {
+        result = await apiResponse.json();
+        break;
+      }
+
       const errData = await apiResponse.json();
-      throw new Error(errData.error?.message || "Failed to generate cases from Gemini.");
+      lastError = errData.error?.message || `Model ${model} failed.`;
+
+      // Only retry on overload/rate-limit errors (503, 429)
+      if (apiResponse.status !== 503 && apiResponse.status !== 429) {
+        throw new Error(lastError);
+      }
     }
 
-    const result = await apiResponse.json();
+    if (!result) {
+      throw new Error(lastError || "All models are currently unavailable. Please try again later.");
+    }
     
     if (!result.candidates || !result.candidates[0] || !result.candidates[0].content || !result.candidates[0].content.parts || !result.candidates[0].content.parts[0].text) {
       throw new Error("Invalid response format received from Gemini AI.");

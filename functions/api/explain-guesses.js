@@ -68,7 +68,11 @@ Use a concise, educational, and bulleted format suitable for high-yield USMLE St
 Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <li>, and <strong> tags). Do not return markdown block quotes or full page HTML.`;
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const models = [
+      "gemini-2.5-flash",
+      "gemini-1.5-flash",
+      "gemini-1.5-pro"
+    ];
 
     const payload = {
       contents: [{
@@ -76,20 +80,34 @@ Keep it compact, clean, and format it in easy-to-read HTML (e.g., using <ul>, <l
       }]
     };
 
-    const apiResponse = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    let result = null;
+    let lastError = null;
 
-    if (!apiResponse.ok) {
+    for (const model of models) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const apiResponse = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (apiResponse.ok) {
+        result = await apiResponse.json();
+        break;
+      }
+
       const errData = await apiResponse.json();
-      throw new Error(errData.error?.message || "Failed to generate explanation from Gemini.");
+      lastError = errData.error?.message || `Model ${model} failed.`;
+
+      // Only retry on overload/rate-limit errors (503, 429)
+      if (apiResponse.status !== 503 && apiResponse.status !== 429) {
+        throw new Error(lastError);
+      }
     }
 
-    const result = await apiResponse.json();
+    if (!result) {
+      throw new Error(lastError || "All models are currently unavailable. Please try again later.");
+    }
     
     if (!result.candidates || !result.candidates[0] || !result.candidates[0].content || !result.candidates[0].content.parts || !result.candidates[0].content.parts[0].text) {
       throw new Error("Invalid response format received from Gemini AI.");
