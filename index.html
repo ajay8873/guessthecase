@@ -2071,7 +2071,7 @@
             const subjectLabel = c.subject ? `<span class="archive-card-subject">${c.subject}</span>` : '<span class="archive-card-subject">Miscellaneous</span>';
 
             return `
-              <div class="${cardClass}" onclick="navigateTo('index.html?archive=${c.id}${chosenSubject && chosenSubject !== 'all' ? '&subject=' + encodeURIComponent(chosenSubject) : ''}')">`
+              <div class="${cardClass}" onclick="navigateTo('index.html?archive=${c.id}${chosenSubject && chosenSubject !== 'all' ? '&subject=' + encodeURIComponent(chosenSubject) : ''}')">
                 <div class="archive-card-header">
                   <span class="archive-card-number">Case #${c.id}</span>
                   ${statusBadge}
