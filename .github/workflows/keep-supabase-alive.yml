@@ -6,13 +6,29 @@ on:
     - cron: '0 0 */3 * *'
   workflow_dispatch: # Allows running manually from the Actions tab
 
+# Required to allow GitHub Actions to commit the heartbeat file back to the repository
+permissions:
+  contents: write
+
 jobs:
   ping-supabase:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Ping Supabase REST API
         run: |
           curl -s -o /dev/null -w "%{http_code}" \
             -H "apikey: sb_publishable_4WUJG04ET75Wr8T0B24Yzg_gP5Ye4xX" \
             -H "Authorization: Bearer sb_publishable_4WUJG04ET75Wr8T0B24Yzg_gP5Ye4xX" \
             "https://lqzybdxtaqzpirdkaegf.supabase.co/rest/v1/cases?select=id&limit=1"
+
+      - name: Keep GitHub Actions active (Commit Heartbeat)
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "Last ping: $(date)" > heartbeat.txt
+          git add heartbeat.txt
+          # Commit and push changes if heartbeat.txt has updated
+          git diff-index --quiet HEAD || (git commit -m "chore: keep github actions active heartbeat" && git push)
